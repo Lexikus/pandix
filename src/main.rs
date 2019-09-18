@@ -1,7 +1,9 @@
 extern crate common;
 extern crate graphic;
+extern crate context;
 
 fn main() {
-    common::c();
-    graphic::g();
+    common::health();
+    graphic::health();
+    context::health();
 }
