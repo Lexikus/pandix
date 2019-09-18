@@ -1,0 +1,9 @@
+[package]
+name = "escape-hell"
+version = "0.0.1"
+authors = ["Alexander <alexander.bifulco@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+graphic = { path = "graphic" }
+common = { path = "common" }
