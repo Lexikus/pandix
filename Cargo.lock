@@ -157,6 +157,7 @@ dependencies = [
  "common 0.1.0",
  "context 0.1.0",
  "graphic 0.1.0",
+ "math 0.1.0",
 ]
 
 [[package]]
@@ -290,6 +291,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "libc 0.2.62 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
+
+[[package]]
+name = "math"
+version = "0.1.0"
 
 [[package]]
 name = "memoffset"
