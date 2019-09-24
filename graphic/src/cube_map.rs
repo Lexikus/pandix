@@ -30,9 +30,9 @@ impl CubeMap {
             let texture = match image::open(texture) {
                 Ok(texture) => texture,
                 Err(_) => {
-                    return Err(CubeMapError::OpeningTextureFailed(String::from(
+                    return Err(CubeMapError::OpeningTextureFailed(
                         format!("opening cube map texture {} failed", texture),
-                    )));
+                    ));
                 }
             };
 
@@ -70,7 +70,7 @@ impl CubeMap {
             gl::TexParameteri(gl::TEXTURE_CUBE_MAP, gl::TEXTURE_WRAP_R, gl::CLAMP_TO_EDGE as i32);
         }
 
-        Ok(CubeMap { id: id })
+        Ok(CubeMap { id })
     }
 
     pub fn bind(&self) {

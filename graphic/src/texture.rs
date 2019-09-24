@@ -39,7 +39,7 @@ impl Texture {
         }
 
         Ok(Texture {
-            id: id,
+            id,
             width: 0,
             height: 0,
         })

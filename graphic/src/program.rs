@@ -44,12 +44,10 @@ impl Program {
                 buf.set_len(len as usize);
                 gl::GetProgramInfoLog(id, len, std::ptr::null_mut(), buf_ptr);
 
-                let error_message = match String::from_utf8(buf) {
+                match String::from_utf8(buf) {
                     Ok(log) => log,
                     Err(vec) => panic!("Could not convert compilation log from buffer: {}", vec),
-                };
-
-                error_message
+                }
             };
             return Err(ProgramError::FailedLinkingShader(error_message));
         }
@@ -57,7 +55,7 @@ impl Program {
         vertex_shader.delete();
         fragment_shader.delete();
 
-        Ok(Program { id: id })
+        Ok(Program { id })
     }
 
     pub fn id(&self) -> u32 {
@@ -78,10 +76,7 @@ impl Program {
 
     pub fn set_bool(&self, name: &str, value: bool) {
         let name = CString::new(name).unwrap();
-        let value = match value {
-            true => 1,
-            false => 0,
-        };
+        let value = if value { 1 } else { 0 };
 
         unsafe {
             let uniform_location = gl::GetUniformLocation(self.id, name.as_ptr());

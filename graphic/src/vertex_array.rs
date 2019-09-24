@@ -10,7 +10,7 @@ impl VertexArray {
         let mut id: u32 = 0;
         unsafe { gl::GenVertexArrays(1, &mut id) };
 
-        VertexArray { id: id }
+        VertexArray { id }
     }
 
     pub fn bind(&self) {
@@ -23,5 +23,11 @@ impl VertexArray {
         unsafe {
             gl::BindVertexArray(0);
         };
+    }
+}
+
+impl Default for VertexArray {
+    fn default() -> Self {
+        Self::new()
     }
 }

@@ -28,7 +28,7 @@ impl DataBuffer {
         }
 
         DataBuffer {
-            id: id,
+            id,
             stride: 0,
             elements: Vec::new(),
         }

@@ -87,10 +87,7 @@ impl BufferElement {
             size: buffer_data_type.size(),
             count: buffer_data_type.count(),
             api_type: buffer_data_type.api_type(),
-            normalized: match normalized {
-                true => 1,
-                false => 0,
-            },
+            normalized: if normalized { 1 } else { 0 },
         }
     }
 

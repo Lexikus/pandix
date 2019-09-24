@@ -65,18 +65,16 @@ impl Shader {
                 buf.set_len(len as usize);
                 gl::GetShaderInfoLog(id, len, std::ptr::null_mut(), buf_ptr);
 
-                let error_message = match String::from_utf8(buf) {
+                match String::from_utf8(buf) {
                     Ok(log) => log,
                     Err(vec) => panic!("Could not convert compilation log from buffer: {}", vec)
-                };
-
-                error_message
+                }
             };
 
             return Err(ShaderError::FailedCompilingShader(error_message));
         }
 
-        Ok(Shader { id: id })
+        Ok(Shader { id })
     }
 
     pub fn id(&self) -> u32 {

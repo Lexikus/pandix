@@ -32,7 +32,7 @@ impl Camera {
             projection_matrix: projection,
             view_matrix: view,
             view_projection_matrix: projection * view,
-            position: position,
+            position,
         }
     }
 

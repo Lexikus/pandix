@@ -23,7 +23,7 @@ impl IndexBuffer {
             );
         };
 
-        IndexBuffer { id: id }
+        IndexBuffer { id }
     }
 
     pub fn bind(&self) {

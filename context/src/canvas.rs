@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
-extern crate gl;
 extern crate glfw;
+extern crate graphic;
 
 const OPENGL_MAJOR_VERSION: u32 = 4;
 const OPENGL_MINOR_VERSION: u32 = 0;
@@ -53,16 +53,16 @@ impl Canvas {
 
         glfw.make_context_current(Some(&window));
 
-        gl::load_with(|s| window.get_proc_address(s));
+        graphic::api::load_with(|s| window.get_proc_address(s));
 
         window.set_key_polling(true);
 
         Ok(Canvas {
             title: title.to_owned(),
-            width: width,
-            height: height,
-            window: window,
-            glfw: glfw,
+            width,
+            height,
+            window,
+            glfw,
             events: receiver,
         })
     }
@@ -99,7 +99,7 @@ impl Canvas {
     pub fn on_update_begin(&mut self, input_controller: &mut InputController) {
         self.glfw.poll_events();
 
-        for (_, message) in glfw::flush_messages(&mut self.events) {
+        for (_, message) in glfw::flush_messages(&self.events) {
             match message {
                 WindowEvent::Key(key, _, action, modifiers) => {
 
@@ -110,12 +110,15 @@ impl Canvas {
                     input_controller.update(
                         &key,
                         Input {
-                            key: key,
-                            action: action,
-                            modifier: modifier,
+                            key,
+                            action,
+                            modifier,
                         },
                     );
-                }
+                },
+                WindowEvent::Size(x, y) => {
+                    println!("{} {}", x, y);
+                },
                 _ => (),
             };
         }

@@ -86,6 +86,7 @@ name = "context"
 version = "0.1.0"
 dependencies = [
  "glfw 0.32.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "graphic 0.1.0",
 ]
 
 [[package]]
