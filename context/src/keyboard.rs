@@ -255,7 +255,7 @@ impl From<glfw::Key> for Key {
     }
 }
 
-#[derive(PartialEq, Eq, Hash, Debug)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash, Debug)]
 pub enum Action {
     Release,
     Press,
@@ -272,7 +272,7 @@ impl From<glfw::Action> for Action {
     }
 }
 
-#[derive(PartialEq, Eq, Hash, Debug)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash, Debug)]
 pub enum Modifier {
     Shift,
     Control,
@@ -297,9 +297,25 @@ impl From<glfw::Modifiers> for Modifier {
     }
 }
 
-#[derive(PartialEq, Eq, Hash, Debug)]
-pub struct Input {
+#[derive(Clone, PartialEq, Eq, Hash, Debug)]
+pub struct Button {
     pub key: Key,
     pub action: Action,
     pub modifier: Modifier,
+}
+
+impl Button {
+    pub fn new() -> Self {
+        Button {
+            key: Key::Unknown,
+            action: Action::Release,
+            modifier: Modifier::Unknown,
+        }
+    }
+}
+
+impl Default for Button {
+    fn default() -> Self {
+        Self::new()
+    }
 }

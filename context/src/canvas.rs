@@ -6,9 +6,8 @@ extern crate graphic;
 const OPENGL_MAJOR_VERSION: u32 = 4;
 const OPENGL_MINOR_VERSION: u32 = 0;
 
-use super::keyboard::Input;
-
-use super::input::Input as InputController;
+use super::keyboard::Button;
+use super::input::Input;
 
 use std::sync::mpsc::Receiver;
 
@@ -96,7 +95,7 @@ impl Canvas {
         }
     }
 
-    pub fn on_update_begin(&mut self, input_controller: &mut InputController) {
+    pub fn on_update_begin(&mut self, input: &mut Input) {
         self.glfw.poll_events();
 
         for (_, message) in glfw::flush_messages(&self.events) {
@@ -107,9 +106,9 @@ impl Canvas {
                     let key = key.into();
                     let modifier = modifiers.into();
 
-                    input_controller.update(
-                        &key,
-                        Input {
+                    input.update(
+                        key,
+                        Button {
                             key,
                             action,
                             modifier,
