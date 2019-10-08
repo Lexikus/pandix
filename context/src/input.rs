@@ -40,10 +40,13 @@ impl Input {
     }
 
     pub fn is_key_hold(&self, key: Key) -> bool {
-        self.current
+        let action = self.current
             .get(&key)
             .unwrap_or(&Button::new())
-            .action == Action::Press
+            .action;
+
+        action == Action::Press ||
+        action == Action::Repeat
     }
 
     pub fn is_key_pressed(&self, key: Key) -> bool {

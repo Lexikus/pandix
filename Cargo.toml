@@ -4,6 +4,14 @@ version = "0.0.1"
 authors = ["Alexander <alexander.bifulco@gmail.com>"]
 edition = "2018"
 
+[workspace]
+members = [
+    "math",
+    "graphic",
+    "common",
+    "context",
+]
+
 [dependencies]
 math = { path = "math" }
 graphic = { path = "graphic" }
