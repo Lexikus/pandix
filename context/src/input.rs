@@ -36,16 +36,14 @@ impl Input {
                 *current.action() == Action::Press || *current.action() == Action::Release
             })
             .for_each(|(current, before)| {
-                match *current.action() {
-                    Action::Press => {
-                        current.set_action(Action::Repeat);
-                        before.set_action(Action::Press);
-                    }
-                    Action::Release => {
-                        before.set_action(Action::Release);
-                    }
-                    _ => (),
-                };
+                if let Action::Press = *current.action() {
+                    current.set_action(Action::Repeat);
+                    before.set_action(Action::Press);
+                }
+
+                if let Action::Release = *current.action() {
+                    before.set_action(Action::Release);
+                }
             });
     }
 
