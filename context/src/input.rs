@@ -50,38 +50,42 @@ impl Input {
     }
 
     pub fn is_key_hold(&self, key: Key) -> bool {
-        let &action = self
-            .current
+        self.current
             .get(&key)
-            .unwrap_or(&Button::default())
-            .action();
-
-        action == Action::Press || action == Action::Repeat
+            .map(|button| *button.action() == Action::Press || *button.action() == Action::Repeat)
+            .unwrap_or(false)
     }
 
     pub fn is_key_pressed(&self, key: Key) -> bool {
-        let &current_action = self
+        let current = self
             .current
             .get(&key)
-            .unwrap_or(&Button::default())
-            .action();
+            .map(|button| *button.action() == Action::Press)
+            .unwrap_or(false);
 
-        let &before_action = self.before.get(&key).unwrap_or(&Button::default()).action();
+        let before = self
+            .before
+            .get(&key)
+            .map(|button| *button.action() == Action::Release)
+            .unwrap_or(false);
 
-        current_action == Action::Press && before_action == Action::Release
+        current && before
     }
 
     pub fn is_key_released(&self, key: Key) -> bool {
-        let &current_action = self
+        let current = self
             .current
             .get(&key)
-            .unwrap_or(&Button::default())
-            .action();
+            .map(|button| *button.action() == Action::Release)
+            .unwrap_or(false);
 
-        let &before_action = self.before.get(&key).unwrap_or(&Button::default()).action();
+        let before = self
+            .before
+            .get(&key)
+            .map(|button| *button.action() == Action::Press || *button.action() == Action::Repeat)
+            .unwrap_or(false);
 
-        current_action == Action::Release
-            && (before_action == Action::Press || before_action == Action::Repeat)
+        current && before
     }
 }
 
