@@ -67,7 +67,7 @@ impl Shader {
 
                 match String::from_utf8(buf) {
                     Ok(log) => log,
-                    Err(vec) => panic!("Could not convert compilation log from buffer: {}", vec)
+                    Err(vec) => panic!("Could not convert compilation log from buffer: {}", vec),
                 }
             };
 

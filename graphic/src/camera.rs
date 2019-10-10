@@ -24,7 +24,11 @@ impl Camera {
         let projection = cgm::perspective(cgm::Deg(fovy_deg), aspect, near, far);
         let mut position: cgm::Vector3<f32> = cgm::Vector3::new(0.0, -2.0, 0.0);
         let mut view: cgm::Matrix4<f32> = cgm::Matrix4::from_translation(position);
-        view = view * cgm::Matrix4::<f32>::from_axis_angle(cgm::Vector3::new(1.0, 0.0, 0.0), cgm::Deg(20.0));
+        view = view
+            * cgm::Matrix4::<f32>::from_axis_angle(
+                cgm::Vector3::new(1.0, 0.0, 0.0),
+                cgm::Deg(20.0),
+            );
         position = cgm::Vector3::new(view.x.x, view.y.y, view.z.z);
 
         Camera {
@@ -59,28 +63,44 @@ impl Camera {
     pub fn translate(&mut self, translation: cgm::Vector3<f32>) {
         let translation = cgm::Matrix4::<f32>::from_translation(translation);
         self.view_matrix = self.view_matrix * translation;
-        self.position = cgm::Vector3::new(self.view_matrix.x.x, self.view_matrix.y.y, self.view_matrix.z.z);
+        self.position = cgm::Vector3::new(
+            self.view_matrix.x.x,
+            self.view_matrix.y.y,
+            self.view_matrix.z.z,
+        );
         self.calculate_matrices();
     }
 
     pub fn rotate_x(&mut self, rotate_in_deg: f32) {
         let rotation = cgm::Matrix4::<f32>::from_angle_x(cgm::Deg(rotate_in_deg));
         self.view_matrix = self.view_matrix * rotation;
-        self.position = cgm::Vector3::new(self.view_matrix.x.x, self.view_matrix.y.y, self.view_matrix.z.z);
+        self.position = cgm::Vector3::new(
+            self.view_matrix.x.x,
+            self.view_matrix.y.y,
+            self.view_matrix.z.z,
+        );
         self.calculate_matrices();
     }
 
     pub fn rotate_y(&mut self, rotate_in_deg: f32) {
         let rotation = cgm::Matrix4::<f32>::from_angle_y(cgm::Deg(rotate_in_deg));
         self.view_matrix = self.view_matrix * rotation;
-        self.position = cgm::Vector3::new(self.view_matrix.x.x, self.view_matrix.y.y, self.view_matrix.z.z);
+        self.position = cgm::Vector3::new(
+            self.view_matrix.x.x,
+            self.view_matrix.y.y,
+            self.view_matrix.z.z,
+        );
         self.calculate_matrices();
     }
 
     pub fn rotate_z(&mut self, rotate_in_deg: f32) {
         let rotation = cgm::Matrix4::<f32>::from_angle_z(cgm::Deg(rotate_in_deg));
         self.view_matrix = self.view_matrix * rotation;
-        self.position = cgm::Vector3::new(self.view_matrix.x.x, self.view_matrix.y.y, self.view_matrix.z.z);
+        self.position = cgm::Vector3::new(
+            self.view_matrix.x.x,
+            self.view_matrix.y.y,
+            self.view_matrix.z.z,
+        );
         self.calculate_matrices();
     }
 }

@@ -20,7 +20,7 @@ pub fn clear() {
     }
 }
 
-pub fn clear_color(r: f32, g: f32, b: f32, a:f32) {
+pub fn clear_color(r: f32, g: f32, b: f32, a: f32) {
     unsafe {
         gl::ClearColor(r, g, b, a);
     }

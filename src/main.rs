@@ -1,7 +1,7 @@
-extern crate math;
 extern crate common;
-extern crate graphic;
 extern crate context;
+extern crate graphic;
+extern crate math;
 
 fn main() {
     math::health();
@@ -11,7 +11,10 @@ fn main() {
 
     let mut context = match context::canvas::Canvas::new("test", 400, 400) {
         Ok(c) => c,
-        Err(_) => { println!("error"); return; },
+        Err(_) => {
+            println!("error");
+            return;
+        }
     };
 
     let mut input = context::input::Input::new();

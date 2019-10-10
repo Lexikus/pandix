@@ -34,7 +34,17 @@ impl Texture {
         unsafe {
             gl::GenTextures(1, &mut id);
             gl::BindTexture(gl::TEXTURE_2D, id);
-            gl::TexImage2D(gl::TEXTURE_2D, 0, format as i32, texture.width() as i32, texture.height() as i32, 0, gl::RGB, gl::UNSIGNED_BYTE, texture.raw_pixels().as_ptr() as *const std::ffi::c_void);
+            gl::TexImage2D(
+                gl::TEXTURE_2D,
+                0,
+                format as i32,
+                texture.width() as i32,
+                texture.height() as i32,
+                0,
+                gl::RGB,
+                gl::UNSIGNED_BYTE,
+                texture.raw_pixels().as_ptr() as *const std::ffi::c_void,
+            );
             gl::GenerateMipmap(gl::TEXTURE_2D);
         }
 

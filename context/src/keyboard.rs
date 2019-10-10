@@ -299,23 +299,35 @@ impl From<glfw::Modifiers> for Modifier {
 
 #[derive(Clone, PartialEq, Eq, Hash, Debug)]
 pub struct Button {
-    pub key: Key,
-    pub action: Action,
-    pub modifier: Modifier,
+    key: Key,
+    action: Action,
+    modifier: Modifier,
 }
 
 impl Button {
-    pub fn new() -> Self {
+    pub fn new(key: Key, action: Action, modifier: Modifier) -> Self {
         Button {
-            key: Key::Unknown,
-            action: Action::Release,
-            modifier: Modifier::Unknown,
+            key,
+            action,
+            modifier,
         }
+    }
+
+    pub fn key(&self) -> &Key {
+        &self.key
+    }
+
+    pub fn action(&self) -> &Action {
+        &self.action
+    }
+
+    pub fn modifier(&self) -> &Modifier {
+        &self.modifier
     }
 }
 
 impl Default for Button {
     fn default() -> Self {
-        Self::new()
+        Self::new(Key::Unknown, Action::Release, Modifier::Unknown)
     }
 }

@@ -6,8 +6,8 @@ extern crate graphic;
 const OPENGL_MAJOR_VERSION: u32 = 4;
 const OPENGL_MINOR_VERSION: u32 = 0;
 
-use super::keyboard::Button;
 use super::input::Input;
+use super::keyboard::Button;
 
 use std::sync::mpsc::Receiver;
 
@@ -66,7 +66,6 @@ impl Canvas {
         })
     }
 
-
     pub fn title(&self) -> &str {
         &self.title
     }
@@ -101,23 +100,15 @@ impl Canvas {
         for (_, message) in glfw::flush_messages(&self.events) {
             match message {
                 WindowEvent::Key(key, _, action, modifiers) => {
-
                     let action = action.into();
                     let key = key.into();
                     let modifier = modifiers.into();
 
-                    input.update(
-                        key,
-                        Button {
-                            key,
-                            action,
-                            modifier,
-                        },
-                    );
-                },
+                    input.update(key, Button::new(key, action, modifier));
+                }
                 WindowEvent::Size(x, y) => {
                     println!("{} {}", x, y);
-                },
+                }
                 _ => (),
             };
         }

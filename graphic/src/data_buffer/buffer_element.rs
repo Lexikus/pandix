@@ -1,7 +1,6 @@
 #![allow(dead_code)]
 extern crate gl;
 
-
 use std::ffi::CStr;
 use std::ffi::CString;
 pub enum BufferDataType {

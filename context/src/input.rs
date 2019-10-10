@@ -2,8 +2,8 @@
 
 use std::collections::HashMap;
 
-use super::keyboard::Button;
 use super::keyboard::Action;
+use super::keyboard::Button;
 use super::keyboard::Key;
 
 // TODO: is_modifier_bla functions
@@ -35,49 +35,43 @@ impl Input {
         self.current
             .iter()
             .zip(&self.before)
-            .filter(|input| (input.0).1.action == Action::Press)
+            .filter(|input| *(input.0).1.action() == Action::Press)
             .for_each(|input| println!("{:?}, {:?}", input.0, input.1));
     }
 
     pub fn is_key_hold(&self, key: Key) -> bool {
-        let action = self.current
+        let &action = self
+            .current
             .get(&key)
-            .unwrap_or(&Button::new())
-            .action;
+            .unwrap_or(&Button::default())
+            .action();
 
-        action == Action::Press ||
-        action == Action::Repeat
+        action == Action::Press || action == Action::Repeat
     }
 
     pub fn is_key_pressed(&self, key: Key) -> bool {
-        let current_action = self.current
+        let &current_action = self
+            .current
             .get(&key)
-            .unwrap_or(&Button::new())
-            .action;
+            .unwrap_or(&Button::default())
+            .action();
 
-        let before_action = self.before
-            .get(&key)
-            .unwrap_or(&Button::new())
-            .action;
+        let &before_action = self.before.get(&key).unwrap_or(&Button::default()).action();
 
-        current_action == Action::Press &&
-        before_action == Action::Release
+        current_action == Action::Press && before_action == Action::Release
     }
 
     pub fn is_key_released(&self, key: Key) -> bool {
-        let current_action = self.current
+        let &current_action = self
+            .current
             .get(&key)
-            .unwrap_or(&Button::new())
-            .action;
+            .unwrap_or(&Button::default())
+            .action();
 
-        let before_action = self.before
-            .get(&key)
-            .unwrap_or(&Button::new())
-            .action;
+        let &before_action = self.before.get(&key).unwrap_or(&Button::default()).action();
 
-        current_action == Action::Release &&
-        (before_action == Action::Press ||
-        before_action == Action::Repeat)
+        current_action == Action::Release
+            && (before_action == Action::Press || before_action == Action::Repeat)
     }
 }
 

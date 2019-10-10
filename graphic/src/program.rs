@@ -5,7 +5,6 @@ extern crate gl;
 use super::shader::Shader;
 use std::ffi::CString;
 
-
 use cgmath::prelude::Array;
 use cgmath::prelude::Matrix;
 use cgmath::{Matrix3, Matrix4, Vector2, Vector3, Vector4};
