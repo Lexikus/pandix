@@ -6,9 +6,6 @@ use super::keyboard::Action;
 use super::keyboard::Button;
 use super::keyboard::Key;
 
-// TODO: is_modifier_bla functions
-// use super::keyboard::Modifier;
-
 const KEYS_ON_KEYBOARD: usize = 121;
 
 pub struct Input {
@@ -30,13 +27,26 @@ impl Input {
         *current = button;
     }
 
-    // TODO: reset the state of pressed keys. This is needed because we want to have a key Press state only for one frame
     pub fn on_update_end(&mut self) {
         self.current
-            .iter()
-            .zip(&self.before)
-            .filter(|input| *(input.0).1.action() == Action::Press)
-            .for_each(|input| println!("{:?}, {:?}", input.0, input.1));
+            .iter_mut()
+            .zip(&mut self.before)
+            .map(|((_, current), (_, before))| (current, before))
+            .filter(|(current, _)| {
+                *current.action() == Action::Press || *current.action() == Action::Release
+            })
+            .for_each(|(current, before)| {
+                match *current.action() {
+                    Action::Press => {
+                        current.set_action(Action::Repeat);
+                        before.set_action(Action::Press);
+                    }
+                    Action::Release => {
+                        before.set_action(Action::Release);
+                    }
+                    _ => (),
+                };
+            });
     }
 
     pub fn is_key_hold(&self, key: Key) -> bool {

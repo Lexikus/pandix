@@ -317,12 +317,24 @@ impl Button {
         &self.key
     }
 
+    pub fn set_key(&mut self, key: Key) {
+        self.key = key;
+    }
+
     pub fn action(&self) -> &Action {
         &self.action
     }
 
+    pub fn set_action(&mut self, action: Action) {
+        self.action = action;
+    }
+
     pub fn modifier(&self) -> &Modifier {
         &self.modifier
+    }
+
+    pub fn set_modifier(&mut self, modifier: Modifier) {
+        self.modifier = modifier;
     }
 }
 

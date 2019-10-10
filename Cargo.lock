@@ -79,14 +79,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "common"
-version = "0.1.0"
+version = "0.0.1"
 
 [[package]]
 name = "context"
-version = "0.1.0"
+version = "0.0.1"
 dependencies = [
  "glfw 0.32.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "graphic 0.1.0",
+ "graphic 0.0.1",
 ]
 
 [[package]]
@@ -154,10 +154,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "escape-hell"
 version = "0.0.1"
 dependencies = [
- "common 0.1.0",
- "context 0.1.0",
- "graphic 0.1.0",
- "math 0.1.0",
+ "common 0.0.1",
+ "context 0.0.1",
+ "graphic 0.0.1",
+ "math 0.0.1",
 ]
 
 [[package]]
@@ -216,7 +216,7 @@ dependencies = [
 
 [[package]]
 name = "graphic"
-version = "0.1.0"
+version = "0.0.1"
 dependencies = [
  "cgmath 0.17.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "gl 0.13.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -294,7 +294,7 @@ dependencies = [
 
 [[package]]
 name = "math"
-version = "0.1.0"
+version = "0.0.1"
 dependencies = [
  "cgmath 0.17.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]

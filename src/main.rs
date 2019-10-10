@@ -9,26 +9,16 @@ fn main() {
     graphic::health();
     context::health();
 
-    let mut context = match context::canvas::Canvas::new("test", 400, 400) {
-        Ok(c) => c,
-        Err(_) => {
-            println!("error");
-            return;
-        }
-    };
-
     let mut input = context::input::Input::new();
 
-    while !context.should_close() {
-        context.on_update_begin(&mut input);
+    input.update(
+        context::keyboard::Key::A,
+        context::keyboard::Button::new(
+            context::keyboard::Key::A,
+            context::keyboard::Action::Press,
+            context::keyboard::Modifier::Unknown,
+        ),
+    );
 
-        if input.is_key_released(context::keyboard::Key::Q) {
-            // println!("Q pressed");
-        } else {
-            // println!("_");
-        }
-
-        input.on_update_end();
-        context.on_update_end();
-    }
+    input.on_update_end();
 }
