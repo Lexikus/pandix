@@ -14,6 +14,7 @@ use std::sync::mpsc::Receiver;
 use glfw::Context;
 use glfw::WindowEvent;
 
+#[derive(Debug)]
 pub enum CanvasError {
     CanvasInitFailed,
     CreatingWindowFailed,
@@ -30,25 +31,23 @@ pub struct Canvas {
 
 impl Canvas {
     pub fn new(title: &str, width: u32, height: u32) -> Result<Canvas, CanvasError> {
-        let mut glfw = match glfw::init(glfw::FAIL_ON_ERRORS) {
-            Ok(glfw) => glfw,
-            Err(_) => return Err(CanvasError::CanvasInitFailed),
-        };
+        let mut glfw = glfw::init(glfw::FAIL_ON_ERRORS)
+            .map_err(|_| CanvasError::CanvasInitFailed)?;
 
         glfw.window_hint(glfw::WindowHint::ContextVersion(
             OPENGL_MAJOR_VERSION,
             OPENGL_MINOR_VERSION,
         ));
+
         glfw.window_hint(glfw::WindowHint::OpenGlProfile(
             glfw::OpenGlProfileHint::Core,
         ));
+
         glfw.window_hint(glfw::WindowHint::OpenGlForwardCompat(true));
 
-        let (mut window, receiver) =
-            match glfw.create_window(width, height, title, glfw::WindowMode::Windowed) {
-                Some((window, receiver)) => (window, receiver),
-                None => return Err(CanvasError::CreatingWindowFailed),
-            };
+        let (mut window, receiver) = glfw
+            .create_window(width, height, title, glfw::WindowMode::Windowed)
+            .ok_or(CanvasError::CreatingWindowFailed)?;
 
         glfw.make_context_current(Some(&window));
 
