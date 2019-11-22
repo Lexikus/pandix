@@ -11,8 +11,16 @@ use super::keyboard::Button;
 
 use std::sync::mpsc::Receiver;
 
+use glfw::Glfw;
 use glfw::Context;
+use glfw::Window;
 use glfw::WindowEvent;
+use glfw::WindowMode;
+use glfw::WindowHint;
+use glfw::FlushedMessages;
+use glfw::FAIL_ON_ERRORS;
+use glfw::OpenGlProfileHint;
+use glfw::SwapInterval;
 
 #[derive(Debug)]
 pub enum CanvasError {
@@ -24,29 +32,29 @@ pub struct Canvas {
     title: String,
     width: u32,
     height: u32,
-    window: glfw::Window,
-    glfw: glfw::Glfw,
-    events: Receiver<(f64, glfw::WindowEvent)>,
+    window: Window,
+    glfw: Glfw,
+    events: Receiver<(f64, WindowEvent)>,
 }
 
 impl Canvas {
     pub fn new(title: &str, width: u32, height: u32) -> Result<Canvas, CanvasError> {
-        let mut glfw = glfw::init(glfw::FAIL_ON_ERRORS)
+        let mut glfw = glfw::init(FAIL_ON_ERRORS)
             .map_err(|_| CanvasError::CanvasInitFailed)?;
 
-        glfw.window_hint(glfw::WindowHint::ContextVersion(
+        glfw.window_hint(WindowHint::ContextVersion(
             OPENGL_MAJOR_VERSION,
             OPENGL_MINOR_VERSION,
         ));
 
-        glfw.window_hint(glfw::WindowHint::OpenGlProfile(
-            glfw::OpenGlProfileHint::Core,
+        glfw.window_hint(WindowHint::OpenGlProfile(
+            OpenGlProfileHint::Core,
         ));
 
-        glfw.window_hint(glfw::WindowHint::OpenGlForwardCompat(true));
+        glfw.window_hint(WindowHint::OpenGlForwardCompat(true));
 
         let (mut window, receiver) = glfw
-            .create_window(width, height, title, glfw::WindowMode::Windowed)
+            .create_window(width, height, title, WindowMode::Windowed)
             .ok_or(CanvasError::CreatingWindowFailed)?;
 
         glfw.make_context_current(Some(&window));
@@ -81,22 +89,32 @@ impl Canvas {
         self.window.should_close()
     }
 
-    pub fn get_window(&self) -> &glfw::Window {
-        &self.window
-    }
-
     pub fn set_vsync(&mut self, enable: bool) {
         if enable {
-            self.glfw.set_swap_interval(glfw::SwapInterval::Adaptive);
+            self.glfw.set_swap_interval(SwapInterval::Adaptive);
         } else {
-            self.glfw.set_swap_interval(glfw::SwapInterval::None);
+            self.glfw.set_swap_interval(SwapInterval::None);
         }
     }
 
-    pub fn on_update_begin(&mut self, input: &mut Input) {
+    pub fn on_update_begin(&mut self) {
         self.glfw.poll_events();
+    }
 
-        for (_, message) in glfw::flush_messages(&self.events) {
+    pub fn poll_events(&self) -> FlushedMessages<'_, (f64, WindowEvent)> {
+        glfw::flush_messages(&self.events)
+    }
+
+    pub fn on_update_end(&mut self) {
+        self.window.swap_buffers();
+    }
+
+    pub fn terminate() {
+        glfw::terminate();
+    }
+
+    pub fn update_events(&self, input: &mut Input) {
+        for (_, message) in self.poll_events() {
             match message {
                 WindowEvent::Key(key, _, action, modifiers) => {
                     let action = action.into();
@@ -111,13 +129,5 @@ impl Canvas {
                 _ => (),
             };
         }
-    }
-
-    pub fn on_update_end(&mut self) {
-        self.window.swap_buffers();
-    }
-
-    pub fn terminate() {
-        glfw::terminate();
     }
 }

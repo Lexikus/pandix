@@ -3,22 +3,28 @@ extern crate context;
 extern crate graphic;
 extern crate math;
 
+use context::input::Input;
+use context::canvas::Canvas;
+use context::keyboard::Key;
+
 fn main() {
     math::health();
     common::health();
     graphic::health();
     context::health();
 
-    let mut input = context::input::Input::new();
+    let mut input = Input::new();
+    let mut canvas = Canvas::new("fsdf", 400, 400).unwrap();
 
-    input.update(
-        context::keyboard::Key::A,
-        context::keyboard::Button::new(
-            context::keyboard::Key::A,
-            context::keyboard::Action::Press,
-            context::keyboard::Modifier::Unknown,
-        ),
-    );
+    while !canvas.should_close() {
+        canvas.on_update_begin();
+        canvas.update_events(&mut input);
 
-    input.on_update_end();
+        if input.is_key_released(Key::A) {
+            println!("A is released");
+        }
+
+        input.on_update_end();
+        canvas.on_update_end();
+    }
 }
