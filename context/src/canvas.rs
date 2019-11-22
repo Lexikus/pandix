@@ -11,16 +11,16 @@ use super::keyboard::Button;
 
 use std::sync::mpsc::Receiver;
 
-use glfw::Glfw;
 use glfw::Context;
-use glfw::Window;
-use glfw::WindowEvent;
-use glfw::WindowMode;
-use glfw::WindowHint;
 use glfw::FlushedMessages;
-use glfw::FAIL_ON_ERRORS;
+use glfw::Glfw;
 use glfw::OpenGlProfileHint;
 use glfw::SwapInterval;
+use glfw::Window;
+use glfw::WindowEvent;
+use glfw::WindowHint;
+use glfw::WindowMode;
+use glfw::FAIL_ON_ERRORS;
 
 #[derive(Debug)]
 pub enum CanvasError {
@@ -39,17 +39,14 @@ pub struct Canvas {
 
 impl Canvas {
     pub fn new(title: &str, width: u32, height: u32) -> Result<Canvas, CanvasError> {
-        let mut glfw = glfw::init(FAIL_ON_ERRORS)
-            .map_err(|_| CanvasError::CanvasInitFailed)?;
+        let mut glfw = glfw::init(FAIL_ON_ERRORS).map_err(|_| CanvasError::CanvasInitFailed)?;
 
         glfw.window_hint(WindowHint::ContextVersion(
             OPENGL_MAJOR_VERSION,
             OPENGL_MINOR_VERSION,
         ));
 
-        glfw.window_hint(WindowHint::OpenGlProfile(
-            OpenGlProfileHint::Core,
-        ));
+        glfw.window_hint(WindowHint::OpenGlProfile(OpenGlProfileHint::Core));
 
         glfw.window_hint(WindowHint::OpenGlForwardCompat(true));
 
@@ -113,7 +110,7 @@ impl Canvas {
         glfw::terminate();
     }
 
-    pub fn update_events(&self, input: &mut Input) {
+    pub fn on_update_external_events(&self, input: &mut Input) {
         for (_, message) in self.poll_events() {
             match message {
                 WindowEvent::Key(key, _, action, modifiers) => {

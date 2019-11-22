@@ -1,37 +1,33 @@
 #![allow(dead_code)]
 
-use std::collections::HashMap;
-
+use super::keyboard;
 use super::keyboard::Action;
 use super::keyboard::Button;
 use super::keyboard::Key;
 
-const KEYS_ON_KEYBOARD: usize = 121;
-
 pub struct Input {
-    current: HashMap<Key, Button>,
-    before: HashMap<Key, Button>,
+    current: [Button; keyboard::KEYS_COUNT],
+    before: [Button; keyboard::KEYS_COUNT],
 }
 
 impl Input {
     pub fn new() -> Self {
         Input {
-            current: HashMap::with_capacity(KEYS_ON_KEYBOARD),
-            before: HashMap::with_capacity(KEYS_ON_KEYBOARD),
+            current: keyboard::keys_collection(),
+            before: keyboard::keys_collection(),
         }
     }
 
     pub fn update(&mut self, key: Key, button: Button) {
-        let current = self.current.entry(key).or_default();
-        *self.before.entry(key).or_default() = current.clone();
-        *current = button;
+        let current = self.current[key as usize].clone();
+        self.before[key as usize] = current;
+        self.current[key as usize] = button;
     }
 
     pub fn on_update_end(&mut self) {
         self.current
             .iter_mut()
-            .zip(&mut self.before)
-            .map(|((_, current), (_, before))| (current, before))
+            .zip(self.before.iter_mut())
             .filter(|(current, _)| {
                 *current.action() == Action::Press || *current.action() == Action::Release
             })
@@ -48,40 +44,21 @@ impl Input {
     }
 
     pub fn is_key_hold(&self, key: Key) -> bool {
-        self.current
-            .get(&key)
-            .map(|button| *button.action() == Action::Press || *button.action() == Action::Repeat)
-            .unwrap_or(false)
+        *self.current[key as usize].action() == Action::Press
+            || *self.current[key as usize].action() == Action::Repeat
     }
 
     pub fn is_key_pressed(&self, key: Key) -> bool {
-        let current = self
-            .current
-            .get(&key)
-            .map(|button| *button.action() == Action::Press)
-            .unwrap_or(false);
-
-        let before = self
-            .before
-            .get(&key)
-            .map(|button| *button.action() == Action::Release)
-            .unwrap_or(false);
+        let current = *self.current[key as usize].action() == Action::Press;
+        let before = *self.before[key as usize].action() == Action::Release;
 
         current && before
     }
 
     pub fn is_key_released(&self, key: Key) -> bool {
-        let current = self
-            .current
-            .get(&key)
-            .map(|button| *button.action() == Action::Release)
-            .unwrap_or(false);
-
-        let before = self
-            .before
-            .get(&key)
-            .map(|button| *button.action() == Action::Press || *button.action() == Action::Repeat)
-            .unwrap_or(false);
+        let current = *self.current[key as usize].action() == Action::Release;
+        let before = *self.before[key as usize].action() == Action::Press
+            || *self.before[key as usize].action() == Action::Repeat;
 
         current && before
     }
