@@ -18,7 +18,7 @@ fn main() {
 
     while !canvas.should_close() {
         canvas.on_update_begin();
-        canvas.on_update_external_events(&mut input);
+        canvas.process_events(&mut input);
 
         if input.is_key_pressed(Key::W) {
             println!("==> W is pressed");

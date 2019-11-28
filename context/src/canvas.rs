@@ -98,10 +98,6 @@ impl Canvas {
         self.glfw.poll_events();
     }
 
-    pub fn poll_events(&self) -> FlushedMessages<'_, (f64, WindowEvent)> {
-        glfw::flush_messages(&self.events)
-    }
-
     pub fn on_update_end(&mut self) {
         self.window.swap_buffers();
     }
@@ -110,7 +106,7 @@ impl Canvas {
         glfw::terminate();
     }
 
-    pub fn on_update_external_events(&self, input: &mut Input) {
+    pub fn process_events(&self, input: &mut Input) {
         for (_, message) in self.poll_events() {
             match message {
                 WindowEvent::Key(key, _, action, modifiers) => {
@@ -126,5 +122,9 @@ impl Canvas {
                 _ => (),
             };
         }
+    }
+
+    fn poll_events(&self) -> FlushedMessages<'_, (f64, WindowEvent)> {
+        glfw::flush_messages(&self.events)
     }
 }
