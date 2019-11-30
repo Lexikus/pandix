@@ -10,10 +10,8 @@ members = [
     "graphic",
     "common",
     "context",
+    "engine"
 ]
 
 [dependencies]
-math = { path = "math" }
-graphic = { path = "graphic" }
-common = { path = "common" }
-context = { path = "context" }
+engine = { path = "engine" }

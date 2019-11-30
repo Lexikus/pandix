@@ -5,6 +5,10 @@ use super::keyboard::Action;
 use super::keyboard::Button;
 use super::keyboard::Key;
 
+// TODO(alex):
+// we should save the original key state aswell.
+// this will be relevant when we actually want to have the correct behaviour.
+// For instance, we want to write into a input field.
 pub struct Input {
     current: [Button; keyboard::KEYS_COUNT],
     before: [Button; keyboard::KEYS_COUNT],

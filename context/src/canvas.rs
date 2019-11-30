@@ -1,7 +1,6 @@
 #![allow(dead_code)]
 
 extern crate glfw;
-extern crate graphic;
 
 const OPENGL_MAJOR_VERSION: u32 = 4;
 const OPENGL_MINOR_VERSION: u32 = 0;
@@ -56,8 +55,6 @@ impl Canvas {
 
         glfw.make_context_current(Some(&window));
 
-        graphic::api::load_with(|s| window.get_proc_address(s));
-
         window.set_key_polling(true);
 
         Ok(Canvas {
@@ -80,6 +77,10 @@ impl Canvas {
 
     pub fn height(&self) -> u32 {
         self.height
+    }
+
+    pub fn get_graphic_specs(&mut self, proc_address: &'static str) -> *const std::ffi::c_void {
+        self.window.get_proc_address(proc_address)
     }
 
     pub fn should_close(&self) -> bool {

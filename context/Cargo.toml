@@ -8,4 +8,3 @@ edition = "2018"
 
 [dependencies]
 glfw = "0.32.0"
-graphic = { path = "../graphic" }
