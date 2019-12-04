@@ -25,11 +25,12 @@ impl Engine {
         graphic::health();
         context::health();
 
-        let v: math::Vec2 = math::Vec3::new(1.0, 1.0, 1.0).into();
-        let x = v.x();
+        let v: math::Vec2 = math::Vec3::new(-5.0, -2.5, 1.0).into();
+        let x = v.x;
 
         println!("{}", x);
-        println!("{:?}", v);
+        println!("{}", v);
+        println!("{}", v.normalized());
 
 
         let mut input = Input::new();
