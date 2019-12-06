@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 
 use std::fmt;
+use std::ops;
 
 use super::vec3::Vec3;
 use super::vec4::Vec4;
@@ -13,7 +14,7 @@ pub struct Vec2 {
 
 impl Vec2 {
     pub fn new(x: f32, y: f32) -> Self {
-        Vec2 {
+        Self {
             x,
             y
         }
@@ -43,15 +44,40 @@ impl Vec2 {
         Self::new(0.0, -1.0)
     }
 
+    pub fn new_normalized(x: f32, y: f32) -> Self {
+        let mut len = x.powi(2) + y.powi(2);
+
+        if len > 0.0 {
+            len = 1.0 / len.sqrt();
+        }
+
+        Self { x: x * len, y: y * len }
+    }
+
+    pub fn distance(from: Self, to: Self) -> f32 {
+        (from - to).magnitude()
+    }
+
     pub fn magnitude(self) -> f32 {
-        (self.x.powi(2) + self.y.powi(2)).sqrt()
+        self.sqrt_magnitude().sqrt()
     }
 
     pub fn sqrt_magnitude(self) -> f32 {
         self.x.powi(2) + self.y.powi(2)
     }
 
-    pub fn normalized(self) -> Self {
+    pub fn normalize(&mut self) {
+        let mut len = self.x.powi(2) + self.y.powi(2);
+
+        if len > 0.0 {
+            len = 1.0 / len.sqrt();
+        }
+
+        self.x *= len;
+        self.y *= len;
+    }
+
+    pub fn as_normalized(self) -> Self {
         let mut len = self.sqrt_magnitude();
 
         if len > 0.0 {
@@ -90,5 +116,71 @@ impl From<Vec4> for Vec2 {
 impl fmt::Display for Vec2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Vec2 {{ x: {}, y: {} }}", self.x, self.y)
+    }
+}
+
+impl ops::Add for Vec2 {
+    type Output = Self;
+
+    fn add(self, other: Self) -> Self::Output {
+        Self {
+            x: self.x + other.x,
+            y: self.y + other.y,
+        }
+    }
+}
+
+impl ops::Sub for Vec2 {
+    type Output = Self;
+
+    fn sub(self, other: Self) -> Self::Output {
+        Self {
+            x: self.x - other.x,
+            y: self.y - other.y,
+        }
+    }
+}
+
+impl ops::Add<Vec3> for Vec2 {
+    type Output = Self;
+
+    fn add(self, other: Vec3) -> Self::Output {
+        Self {
+            x: self.x + other.x,
+            y: self.y + other.y,
+        }
+    }
+}
+
+impl ops::Sub<Vec3> for Vec2 {
+    type Output = Self;
+
+    fn sub(self, other: Vec3) -> Self::Output {
+        Self {
+            x: self.x - other.x,
+            y: self.y - other.y,
+        }
+    }
+}
+
+impl ops::Add<Vec4> for Vec2 {
+    type Output = Self;
+
+    fn add(self, other: Vec4) -> Self::Output {
+        Self {
+            x: self.x + other.x,
+            y: self.y + other.y,
+        }
+    }
+}
+
+impl ops::Sub<Vec4> for Vec2 {
+    type Output = Self;
+
+    fn sub(self, other: Vec4) -> Self::Output {
+        Self {
+            x: self.x - other.x,
+            y: self.y - other.y,
+        }
     }
 }

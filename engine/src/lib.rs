@@ -30,7 +30,7 @@ impl Engine {
 
         println!("{}", x);
         println!("{}", v);
-        println!("{}", v.normalized());
+        println!("{}", v.as_normalized());
 
 
         let mut input = Input::new();
