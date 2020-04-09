@@ -3,13 +3,10 @@
 use std::fmt;
 use std::ops;
 
-use super::vec3::Vec3;
-use super::vec4::Vec4;
-use super::PI;
+use super::Vec3;
+use super::Vec4;
 
-// TODO: maybe we need to implement PartialEq ourself. We'll see that later in the dev. how
-//       precise the default PartialEq is.
-#[derive(Debug, Copy, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Vec2 {
     pub x: f32,
     pub y: f32,
@@ -20,7 +17,7 @@ impl Vec2 {
         Self { x, y }
     }
 
-    pub fn new_normalized(x: f32, y: f32) -> Self {
+    pub fn new_normalize(x: f32, y: f32) -> Self {
         let mut len = x.powi(2) + y.powi(2);
 
         if len > 0.0 {
@@ -72,27 +69,19 @@ impl Vec2 {
         }
     }
 
-    pub fn angle(lhs: Self, rhs: Self) -> f32 {
-        let mut lhs_len = lhs.x.powi(2) + lhs.y.powi(2);
-        let mut rhs_len = rhs.x.powi(2) + rhs.y.powi(2);
+    pub fn angle_rad(lhs: Self, rhs: Self) -> f32 {
+        let lhs_len = lhs.x.powi(2) + lhs.y.powi(2);
+        let rhs_len = rhs.x.powi(2) + rhs.y.powi(2);
 
-        if lhs_len > 0.0 {
-            lhs_len = 1.0 / lhs_len.sqrt();
-        }
+        let magnitude = lhs_len.sqrt() * rhs_len.sqrt();
 
-        if rhs_len > 0.0 {
-            rhs_len = 1.0 / rhs_len.sqrt();
-        }
-
-        let cos = (lhs.x * lhs.y + rhs.x * rhs.y) * lhs_len * rhs_len;
-
-        if cos > 1.0 {
+        let cos = if magnitude == 0.0 {
             0.0
-        } else if cos < -1.0 {
-            PI
         } else {
-            cos.acos()
-        }
+            (lhs.x * rhs.x + lhs.y * rhs.y) / magnitude
+        };
+
+        cos.max(-1.0).min(1.0).acos()
     }
 
     pub fn scale(lhs: Self, rhs: Self) -> Self {
@@ -101,7 +90,9 @@ impl Vec2 {
             y: lhs.y * rhs.y,
         }
     }
+}
 
+impl Vec2 {
     pub fn magnitude(self) -> f32 {
         self.sqrt_magnitude().sqrt()
     }
@@ -121,7 +112,7 @@ impl Vec2 {
         self.y *= len;
     }
 
-    pub fn as_normalized(self) -> Self {
+    pub fn into_normalize(self) -> Self {
         let mut len = self.sqrt_magnitude();
 
         if len > 0.0 {
@@ -134,7 +125,8 @@ impl Vec2 {
         }
     }
 
-    /// Gets the pointer to the first element.
+    // TODO(alex): Check if we have to provide the ptr address of the first element
+    //             or the struct object
     pub fn as_ptr(self) -> *const f32 {
         &self.x
     }
@@ -143,6 +135,12 @@ impl Vec2 {
 impl Default for Vec2 {
     fn default() -> Self {
         Vec2::new(0.0, 0.0)
+    }
+}
+
+impl fmt::Display for Vec2 {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Vec2 {{ x: {}, y: {} }}", self.x, self.y)
     }
 }
 
@@ -158,12 +156,6 @@ impl From<Vec4> for Vec2 {
     }
 }
 
-impl fmt::Display for Vec2 {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Vec2 {{ x: {}, y: {} }}", self.x, self.y)
-    }
-}
-
 impl ops::Add for Vec2 {
     type Output = Self;
 
@@ -175,8 +167,48 @@ impl ops::Add for Vec2 {
     }
 }
 
+impl ops::Add<Vec3> for Vec2 {
+    type Output = Self;
+
+    fn add(self, rhs: Vec3) -> Self::Output {
+        Self::Output {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+        }
+    }
+}
+
+impl ops::Add<Vec4> for Vec2 {
+    type Output = Self;
+
+    fn add(self, rhs: Vec4) -> Self::Output {
+        Self::Output {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+        }
+    }
+}
+
 impl ops::AddAssign for Vec2 {
     fn add_assign(&mut self, rhs: Self) {
+        *self = Self {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+        };
+    }
+}
+
+impl ops::AddAssign<Vec3> for Vec2 {
+    fn add_assign(&mut self, rhs: Vec3) {
+        *self = Self {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+        };
+    }
+}
+
+impl ops::AddAssign<Vec4> for Vec2 {
+    fn add_assign(&mut self, rhs: Vec4) {
         *self = Self {
             x: self.x + rhs.x,
             y: self.y + rhs.y,
@@ -195,8 +227,48 @@ impl ops::Sub for Vec2 {
     }
 }
 
+impl ops::Sub<Vec3> for Vec2 {
+    type Output = Self;
+
+    fn sub(self, rhs: Vec3) -> Self::Output {
+        Self::Output {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+        }
+    }
+}
+
+impl ops::Sub<Vec4> for Vec2 {
+    type Output = Self;
+
+    fn sub(self, rhs: Vec4) -> Self::Output {
+        Self::Output {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+        }
+    }
+}
+
 impl ops::SubAssign for Vec2 {
     fn sub_assign(&mut self, rhs: Self) {
+        *self = Self {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+        };
+    }
+}
+
+impl ops::SubAssign<Vec3> for Vec2 {
+    fn sub_assign(&mut self, rhs: Vec3) {
+        *self = Self {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+        };
+    }
+}
+
+impl ops::SubAssign<Vec4> for Vec2 {
+    fn sub_assign(&mut self, rhs: Vec4) {
         *self = Self {
             x: self.x - rhs.x,
             y: self.y - rhs.y,
@@ -215,12 +287,102 @@ impl ops::Mul<f32> for Vec2 {
     }
 }
 
-impl ops::MulAssign<f32> for Vec2 {
-    fn mul_assign(&mut self, rhs: f32) {
-        *self = Self {
-            x: self.x * rhs,
-            y: self.y * rhs,
-        };
+impl ops::Mul<f64> for Vec2 {
+    type Output = Self;
+
+    fn mul(self, rhs: f64) -> Self::Output {
+        Self::Output {
+            x: self.x * rhs as f32,
+            y: self.y * rhs as f32,
+        }
+    }
+}
+
+impl ops::Mul<i8> for Vec2 {
+    type Output = Self;
+
+    fn mul(self, rhs: i8) -> Self::Output {
+        Self::Output {
+            x: self.x * rhs as f32,
+            y: self.y * rhs as f32,
+        }
+    }
+}
+
+impl ops::Mul<i16> for Vec2 {
+    type Output = Self;
+
+    fn mul(self, rhs: i16) -> Self::Output {
+        Self::Output {
+            x: self.x * rhs as f32,
+            y: self.y * rhs as f32,
+        }
+    }
+}
+
+impl ops::Mul<i32> for Vec2 {
+    type Output = Self;
+
+    fn mul(self, rhs: i32) -> Self::Output {
+        Self::Output {
+            x: self.x * rhs as f32,
+            y: self.y * rhs as f32,
+        }
+    }
+}
+
+impl ops::Mul<i64> for Vec2 {
+    type Output = Self;
+
+    fn mul(self, rhs: i64) -> Self::Output {
+        Self::Output {
+            x: self.x * rhs as f32,
+            y: self.y * rhs as f32,
+        }
+    }
+}
+
+impl ops::Mul<u8> for Vec2 {
+    type Output = Self;
+
+    fn mul(self, rhs: u8) -> Self::Output {
+        Self::Output {
+            x: self.x * rhs as f32,
+            y: self.y * rhs as f32,
+        }
+    }
+}
+
+impl ops::Mul<u16> for Vec2 {
+    type Output = Self;
+
+    fn mul(self, rhs: u16) -> Self::Output {
+        Self::Output {
+            x: self.x * rhs as f32,
+            y: self.y * rhs as f32,
+        }
+    }
+}
+
+impl ops::Mul<u32> for Vec2 {
+    type Output = Self;
+
+    fn mul(self, rhs: u32) -> Self::Output {
+        Self::Output {
+            x: self.x * rhs as f32,
+            y: self.y * rhs as f32,
+        }
+    }
+}
+
+impl ops::Mul<u64> for Vec2 {
+    type Output = Self;
+
+    fn mul(self, rhs: u64) -> Self::Output {
+        Self::Output {
+            x: self.x * rhs as f32,
+            y: self.y * rhs as f32,
+        }
     }
 }
 
@@ -235,6 +397,195 @@ impl ops::Mul<Vec2> for f32 {
     }
 }
 
+impl ops::Mul<Vec2> for f64 {
+    type Output = Vec2;
+
+    fn mul(self, rhs: Vec2) -> Self::Output {
+        Self::Output {
+            x: self as f32 * rhs.x,
+            y: self as f32 * rhs.y,
+        }
+    }
+}
+
+impl ops::Mul<Vec2> for i8 {
+    type Output = Vec2;
+
+    fn mul(self, rhs: Vec2) -> Self::Output {
+        Self::Output {
+            x: self as f32 * rhs.x,
+            y: self as f32 * rhs.y,
+        }
+    }
+}
+
+impl ops::Mul<Vec2> for i16 {
+    type Output = Vec2;
+
+    fn mul(self, rhs: Vec2) -> Self::Output {
+        Self::Output {
+            x: self as f32 * rhs.x,
+            y: self as f32 * rhs.y,
+        }
+    }
+}
+
+impl ops::Mul<Vec2> for i32 {
+    type Output = Vec2;
+
+    fn mul(self, rhs: Vec2) -> Self::Output {
+        Self::Output {
+            x: self as f32 * rhs.x,
+            y: self as f32 * rhs.y,
+        }
+    }
+}
+
+impl ops::Mul<Vec2> for i64 {
+    type Output = Vec2;
+
+    fn mul(self, rhs: Vec2) -> Self::Output {
+        Self::Output {
+            x: self as f32 * rhs.x,
+            y: self as f32 * rhs.y,
+        }
+    }
+}
+
+impl ops::Mul<Vec2> for u8 {
+    type Output = Vec2;
+
+    fn mul(self, rhs: Vec2) -> Self::Output {
+        Self::Output {
+            x: self as f32 * rhs.x,
+            y: self as f32 * rhs.y,
+        }
+    }
+}
+
+impl ops::Mul<Vec2> for u16 {
+    type Output = Vec2;
+
+    fn mul(self, rhs: Vec2) -> Self::Output {
+        Self::Output {
+            x: self as f32 * rhs.x,
+            y: self as f32 * rhs.y,
+        }
+    }
+}
+
+impl ops::Mul<Vec2> for u32 {
+    type Output = Vec2;
+
+    fn mul(self, rhs: Vec2) -> Self::Output {
+        Self::Output {
+            x: self as f32 * rhs.x,
+            y: self as f32 * rhs.y,
+        }
+    }
+}
+
+impl ops::Mul<Vec2> for u64 {
+    type Output = Vec2;
+
+    fn mul(self, rhs: Vec2) -> Self::Output {
+        Self::Output {
+            x: self as f32 * rhs.x,
+            y: self as f32 * rhs.y,
+        }
+    }
+}
+
+impl ops::MulAssign<f32> for Vec2 {
+    fn mul_assign(&mut self, rhs: f32) {
+        *self = Self {
+            x: self.x * rhs,
+            y: self.y * rhs,
+        };
+    }
+}
+
+impl ops::MulAssign<f64> for Vec2 {
+    fn mul_assign(&mut self, rhs: f64) {
+        *self = Self {
+            x: self.x * rhs as f32,
+            y: self.y * rhs as f32,
+        };
+    }
+}
+
+impl ops::MulAssign<i8> for Vec2 {
+    fn mul_assign(&mut self, rhs: i8) {
+        *self = Self {
+            x: self.x * rhs as f32,
+            y: self.y * rhs as f32,
+        };
+    }
+}
+
+impl ops::MulAssign<i16> for Vec2 {
+    fn mul_assign(&mut self, rhs: i16) {
+        *self = Self {
+            x: self.x * rhs as f32,
+            y: self.y * rhs as f32,
+        };
+    }
+}
+
+impl ops::MulAssign<i32> for Vec2 {
+    fn mul_assign(&mut self, rhs: i32) {
+        *self = Self {
+            x: self.x * rhs as f32,
+            y: self.y * rhs as f32,
+        };
+    }
+}
+
+impl ops::MulAssign<i64> for Vec2 {
+    fn mul_assign(&mut self, rhs: i64) {
+        *self = Self {
+            x: self.x * rhs as f32,
+            y: self.y * rhs as f32,
+        };
+    }
+}
+
+impl ops::MulAssign<u8> for Vec2 {
+    fn mul_assign(&mut self, rhs: u8) {
+        *self = Self {
+            x: self.x * rhs as f32,
+            y: self.y * rhs as f32,
+        };
+    }
+}
+
+impl ops::MulAssign<u16> for Vec2 {
+    fn mul_assign(&mut self, rhs: u16) {
+        *self = Self {
+            x: self.x * rhs as f32,
+            y: self.y * rhs as f32,
+        };
+    }
+}
+
+impl ops::MulAssign<u32> for Vec2 {
+    fn mul_assign(&mut self, rhs: u32) {
+        *self = Self {
+            x: self.x * rhs as f32,
+            y: self.y * rhs as f32,
+        };
+    }
+}
+
+impl ops::MulAssign<u64> for Vec2 {
+    fn mul_assign(&mut self, rhs: u64) {
+        *self = Self {
+            x: self.x * rhs as f32,
+            y: self.y * rhs as f32,
+        };
+    }
+}
+
 impl ops::Div<f32> for Vec2 {
     type Output = Self;
 
@@ -242,6 +593,105 @@ impl ops::Div<f32> for Vec2 {
         Self::Output {
             x: self.x / rhs,
             y: self.y / rhs,
+        }
+    }
+}
+
+impl ops::Div<f64> for Vec2 {
+    type Output = Self;
+
+    fn div(self, rhs: f64) -> Self::Output {
+        Self::Output {
+            x: self.x / rhs as f32,
+            y: self.y / rhs as f32,
+        }
+    }
+}
+
+impl ops::Div<i8> for Vec2 {
+    type Output = Self;
+
+    fn div(self, rhs: i8) -> Self::Output {
+        Self::Output {
+            x: self.x / rhs as f32,
+            y: self.y / rhs as f32,
+        }
+    }
+}
+
+impl ops::Div<i16> for Vec2 {
+    type Output = Self;
+
+    fn div(self, rhs: i16) -> Self::Output {
+        Self::Output {
+            x: self.x / rhs as f32,
+            y: self.y / rhs as f32,
+        }
+    }
+}
+
+impl ops::Div<i32> for Vec2 {
+    type Output = Self;
+
+    fn div(self, rhs: i32) -> Self::Output {
+        Self::Output {
+            x: self.x / rhs as f32,
+            y: self.y / rhs as f32,
+        }
+    }
+}
+
+impl ops::Div<i64> for Vec2 {
+    type Output = Self;
+
+    fn div(self, rhs: i64) -> Self::Output {
+        Self::Output {
+            x: self.x / rhs as f32,
+            y: self.y / rhs as f32,
+        }
+    }
+}
+
+impl ops::Div<u8> for Vec2 {
+    type Output = Self;
+
+    fn div(self, rhs: u8) -> Self::Output {
+        Self::Output {
+            x: self.x / rhs as f32,
+            y: self.y / rhs as f32,
+        }
+    }
+}
+
+impl ops::Div<u16> for Vec2 {
+    type Output = Self;
+
+    fn div(self, rhs: u16) -> Self::Output {
+        Self::Output {
+            x: self.x / rhs as f32,
+            y: self.y / rhs as f32,
+        }
+    }
+}
+
+impl ops::Div<u32> for Vec2 {
+    type Output = Self;
+
+    fn div(self, rhs: u32) -> Self::Output {
+        Self::Output {
+            x: self.x / rhs as f32,
+            y: self.y / rhs as f32,
+        }
+    }
+}
+
+impl ops::Div<u64> for Vec2 {
+    type Output = Self;
+
+    fn div(self, rhs: u64) -> Self::Output {
+        Self::Output {
+            x: self.x / rhs as f32,
+            y: self.y / rhs as f32,
         }
     }
 }
@@ -255,82 +705,83 @@ impl ops::DivAssign<f32> for Vec2 {
     }
 }
 
-impl ops::Add<Vec3> for Vec2 {
-    type Output = Self;
-
-    fn add(self, rhs: Vec3) -> Self::Output {
-        Self::Output {
-            x: self.x + rhs.x,
-            y: self.y + rhs.y,
-        }
-    }
-}
-
-impl ops::AddAssign<Vec3> for Vec2 {
-    fn add_assign(&mut self, rhs: Vec3) {
+impl ops::DivAssign<f64> for Vec2 {
+    fn div_assign(&mut self, rhs: f64) {
         *self = Self {
-            x: self.x + rhs.x,
-            y: self.y + rhs.y,
+            x: self.x / rhs as f32,
+            y: self.y / rhs as f32,
         };
     }
 }
 
-impl ops::Sub<Vec3> for Vec2 {
-    type Output = Self;
-
-    fn sub(self, rhs: Vec3) -> Self::Output {
-        Self::Output {
-            x: self.x - rhs.x,
-            y: self.y - rhs.y,
-        }
-    }
-}
-
-impl ops::SubAssign<Vec3> for Vec2 {
-    fn sub_assign(&mut self, rhs: Vec3) {
+impl ops::DivAssign<i8> for Vec2 {
+    fn div_assign(&mut self, rhs: i8) {
         *self = Self {
-            x: self.x - rhs.x,
-            y: self.y - rhs.y,
+            x: self.x / rhs as f32,
+            y: self.y / rhs as f32,
         };
     }
 }
 
-impl ops::Add<Vec4> for Vec2 {
-    type Output = Self;
-
-    fn add(self, rhs: Vec4) -> Self::Output {
-        Self::Output {
-            x: self.x + rhs.x,
-            y: self.y + rhs.y,
-        }
-    }
-}
-
-impl ops::AddAssign<Vec4> for Vec2 {
-    fn add_assign(&mut self, rhs: Vec4) {
+impl ops::DivAssign<i16> for Vec2 {
+    fn div_assign(&mut self, rhs: i16) {
         *self = Self {
-            x: self.x + rhs.x,
-            y: self.y + rhs.y,
+            x: self.x / rhs as f32,
+            y: self.y / rhs as f32,
         };
     }
 }
 
-impl ops::Sub<Vec4> for Vec2 {
-    type Output = Self;
-
-    fn sub(self, rhs: Vec4) -> Self::Output {
-        Self::Output {
-            x: self.x - rhs.x,
-            y: self.y - rhs.y,
-        }
+impl ops::DivAssign<i32> for Vec2 {
+    fn div_assign(&mut self, rhs: i32) {
+        *self = Self {
+            x: self.x / rhs as f32,
+            y: self.y / rhs as f32,
+        };
     }
 }
 
-impl ops::SubAssign<Vec4> for Vec2 {
-    fn sub_assign(&mut self, rhs: Vec4) {
+impl ops::DivAssign<i64> for Vec2 {
+    fn div_assign(&mut self, rhs: i64) {
         *self = Self {
-            x: self.x - rhs.x,
-            y: self.y - rhs.y,
+            x: self.x / rhs as f32,
+            y: self.y / rhs as f32,
+        };
+    }
+}
+
+impl ops::DivAssign<u8> for Vec2 {
+    fn div_assign(&mut self, rhs: u8) {
+        *self = Self {
+            x: self.x / rhs as f32,
+            y: self.y / rhs as f32,
+        };
+    }
+}
+
+impl ops::DivAssign<u16> for Vec2 {
+    fn div_assign(&mut self, rhs: u16) {
+        *self = Self {
+            x: self.x / rhs as f32,
+            y: self.y / rhs as f32,
+        };
+    }
+}
+
+impl ops::DivAssign<u32> for Vec2 {
+    fn div_assign(&mut self, rhs: u32) {
+        *self = Self {
+            x: self.x / rhs as f32,
+            y: self.y / rhs as f32,
+        };
+    }
+}
+
+impl ops::DivAssign<u64> for Vec2 {
+    fn div_assign(&mut self, rhs: u64) {
+        *self = Self {
+            x: self.x / rhs as f32,
+            y: self.y / rhs as f32,
         };
     }
 }
