@@ -30,8 +30,7 @@ impl Engine {
 
         println!("{}", x);
         println!("{}", v);
-        println!("{}", v.into_normalize());
-
+        println!("{}", v.normalized());
 
         let mut input = Input::new();
         let mut canvas = Canvas::new("fsdf", 400, 400).unwrap();

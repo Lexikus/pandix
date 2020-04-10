@@ -17,7 +17,7 @@ impl Vec2 {
         Self { x, y }
     }
 
-    pub fn new_normalize(x: f32, y: f32) -> Self {
+    pub fn new_normalized(x: f32, y: f32) -> Self {
         let mut len = x.powi(2) + y.powi(2);
 
         if len > 0.0 {
@@ -90,6 +90,12 @@ impl Vec2 {
             y: lhs.y * rhs.y,
         }
     }
+
+    // TODO(alex): max
+    // TODO(alex): min
+    // TODO(alex): move_towards
+    // TODO(alex): rotate_towards
+    // TODO(alex): sqrt_distance
 }
 
 impl Vec2 {
@@ -101,18 +107,7 @@ impl Vec2 {
         self.x.powi(2) + self.y.powi(2)
     }
 
-    pub fn normalize(&mut self) {
-        let mut len = self.x.powi(2) + self.y.powi(2);
-
-        if len > 0.0 {
-            len = 1.0 / len.sqrt();
-        }
-
-        self.x *= len;
-        self.y *= len;
-    }
-
-    pub fn into_normalize(self) -> Self {
+    pub fn normalized(self) -> Self {
         let mut len = self.sqrt_magnitude();
 
         if len > 0.0 {
@@ -134,7 +129,7 @@ impl Vec2 {
 
 impl Default for Vec2 {
     fn default() -> Self {
-        Vec2::new(0.0, 0.0)
+        Self::new(0.0, 0.0)
     }
 }
 
@@ -146,13 +141,13 @@ impl fmt::Display for Vec2 {
 
 impl From<Vec3> for Vec2 {
     fn from(vector: Vec3) -> Self {
-        Vec2::new(vector.x, vector.y)
+        Self::new(vector.x, vector.y)
     }
 }
 
 impl From<Vec4> for Vec2 {
     fn from(vector: Vec4) -> Self {
-        Vec2::new(vector.x, vector.y)
+        Self::new(vector.x, vector.y)
     }
 }
 
@@ -389,7 +384,7 @@ impl ops::Mul<u64> for Vec2 {
 impl ops::Mul<Vec2> for f32 {
     type Output = Vec2;
 
-    fn mul(self, rhs: Vec2) -> Self::Output {
+    fn mul(self, rhs: Self::Output) -> Self::Output {
         Self::Output {
             x: self * rhs.x,
             y: self * rhs.y,
@@ -400,7 +395,7 @@ impl ops::Mul<Vec2> for f32 {
 impl ops::Mul<Vec2> for f64 {
     type Output = Vec2;
 
-    fn mul(self, rhs: Vec2) -> Self::Output {
+    fn mul(self, rhs: Self::Output) -> Self::Output {
         Self::Output {
             x: self as f32 * rhs.x,
             y: self as f32 * rhs.y,
@@ -411,7 +406,7 @@ impl ops::Mul<Vec2> for f64 {
 impl ops::Mul<Vec2> for i8 {
     type Output = Vec2;
 
-    fn mul(self, rhs: Vec2) -> Self::Output {
+    fn mul(self, rhs: Self::Output) -> Self::Output {
         Self::Output {
             x: self as f32 * rhs.x,
             y: self as f32 * rhs.y,
@@ -422,7 +417,7 @@ impl ops::Mul<Vec2> for i8 {
 impl ops::Mul<Vec2> for i16 {
     type Output = Vec2;
 
-    fn mul(self, rhs: Vec2) -> Self::Output {
+    fn mul(self, rhs: Self::Output) -> Self::Output {
         Self::Output {
             x: self as f32 * rhs.x,
             y: self as f32 * rhs.y,
@@ -433,7 +428,7 @@ impl ops::Mul<Vec2> for i16 {
 impl ops::Mul<Vec2> for i32 {
     type Output = Vec2;
 
-    fn mul(self, rhs: Vec2) -> Self::Output {
+    fn mul(self, rhs: Self::Output) -> Self::Output {
         Self::Output {
             x: self as f32 * rhs.x,
             y: self as f32 * rhs.y,
@@ -444,7 +439,7 @@ impl ops::Mul<Vec2> for i32 {
 impl ops::Mul<Vec2> for i64 {
     type Output = Vec2;
 
-    fn mul(self, rhs: Vec2) -> Self::Output {
+    fn mul(self, rhs: Self::Output) -> Self::Output {
         Self::Output {
             x: self as f32 * rhs.x,
             y: self as f32 * rhs.y,
@@ -455,7 +450,7 @@ impl ops::Mul<Vec2> for i64 {
 impl ops::Mul<Vec2> for u8 {
     type Output = Vec2;
 
-    fn mul(self, rhs: Vec2) -> Self::Output {
+    fn mul(self, rhs: Self::Output) -> Self::Output {
         Self::Output {
             x: self as f32 * rhs.x,
             y: self as f32 * rhs.y,
@@ -466,7 +461,7 @@ impl ops::Mul<Vec2> for u8 {
 impl ops::Mul<Vec2> for u16 {
     type Output = Vec2;
 
-    fn mul(self, rhs: Vec2) -> Self::Output {
+    fn mul(self, rhs: Self::Output) -> Self::Output {
         Self::Output {
             x: self as f32 * rhs.x,
             y: self as f32 * rhs.y,
@@ -477,7 +472,7 @@ impl ops::Mul<Vec2> for u16 {
 impl ops::Mul<Vec2> for u32 {
     type Output = Vec2;
 
-    fn mul(self, rhs: Vec2) -> Self::Output {
+    fn mul(self, rhs: Self::Output) -> Self::Output {
         Self::Output {
             x: self as f32 * rhs.x,
             y: self as f32 * rhs.y,
@@ -488,7 +483,7 @@ impl ops::Mul<Vec2> for u32 {
 impl ops::Mul<Vec2> for u64 {
     type Output = Vec2;
 
-    fn mul(self, rhs: Vec2) -> Self::Output {
+    fn mul(self, rhs: Self::Output) -> Self::Output {
         Self::Output {
             x: self as f32 * rhs.x,
             y: self as f32 * rhs.y,

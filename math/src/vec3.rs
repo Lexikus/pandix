@@ -15,7 +15,7 @@ pub struct Vec3 {
 
 impl Vec3 {
     pub fn new(x: f32, y: f32, z: f32) -> Self {
-        Vec3 { x, y, z }
+        Self { x, y, z }
     }
 
     pub fn new_normalized(x: f32, y: f32, z: f32) -> Self {
@@ -72,6 +72,14 @@ impl Vec3 {
         lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z
     }
 
+    pub fn cross(lhs: Self, rhs: Self) -> Self {
+        Self {
+            x: lhs.y * rhs.z - lhs.z * rhs.y,
+            y: lhs.z * rhs.x - lhs.x * rhs.z,
+            z: lhs.x * rhs.y - lhs.y * rhs.x,
+        }
+    }
+
     pub fn lerp(lhs: Self, rhs: Self, t: f32) -> Self {
         Self {
             x: lhs.x + t * (rhs.x - lhs.x),
@@ -104,6 +112,11 @@ impl Vec3 {
             z: lhs.z * rhs.z,
         }
     }
+
+    // TODO(alex): max
+    // TODO(alex): min
+    // TODO(alex): move_towards
+    // TODO(alex): sqrt_distance
 }
 
 impl Vec3 {
@@ -115,19 +128,7 @@ impl Vec3 {
         self.x.powi(2) + self.y.powi(2) + self.z.powi(2)
     }
 
-    pub fn normalize(&mut self) {
-        let mut len = self.x.powi(2) + self.y.powi(2) + self.z.powi(2);
-
-        if len > 0.0 {
-            len = 1.0 / len.sqrt();
-        }
-
-        self.x *= len;
-        self.y *= len;
-        self.z *= len;
-    }
-
-    pub fn into_normalize(self) -> Self {
+    pub fn normalized(self) -> Self {
         let mut len = self.sqrt_magnitude();
 
         if len > 0.0 {
@@ -150,7 +151,7 @@ impl Vec3 {
 
 impl Default for Vec3 {
     fn default() -> Self {
-        Vec3::new(0.0, 0.0, 0.0)
+        Self::new(0.0, 0.0, 0.0)
     }
 }
 
@@ -162,13 +163,13 @@ impl fmt::Display for Vec3 {
 
 impl From<Vec2> for Vec3 {
     fn from(vector: Vec2) -> Self {
-        Vec3::new(vector.x, vector.y, 0.0)
+        Self::new(vector.x, vector.y, 0.0)
     }
 }
 
 impl From<Vec4> for Vec3 {
     fn from(vector: Vec4) -> Self {
-        Vec3::new(vector.x, vector.y, vector.z)
+        Self::new(vector.x, vector.y, vector.z)
     }
 }
 
@@ -335,7 +336,7 @@ impl ops::Mul<i8> for Vec3 {
         Self::Output {
             x: self.x * rhs as f32,
             y: self.y * rhs as f32,
-            z: self.z * rhs as f32
+            z: self.z * rhs as f32,
         }
     }
 }
@@ -427,7 +428,7 @@ impl ops::Mul<u64> for Vec3 {
 impl ops::Mul<Vec3> for f32 {
     type Output = Vec3;
 
-    fn mul(self, rhs: Vec3) -> Self::Output {
+    fn mul(self, rhs: Self::Output) -> Self::Output {
         Self::Output {
             x: self * rhs.x,
             y: self * rhs.y,
@@ -439,7 +440,7 @@ impl ops::Mul<Vec3> for f32 {
 impl ops::Mul<Vec3> for f64 {
     type Output = Vec3;
 
-    fn mul(self, rhs: Vec3) -> Self::Output {
+    fn mul(self, rhs: Self::Output) -> Self::Output {
         Self::Output {
             x: self as f32 * rhs.x,
             y: self as f32 * rhs.y,
@@ -451,7 +452,7 @@ impl ops::Mul<Vec3> for f64 {
 impl ops::Mul<Vec3> for i8 {
     type Output = Vec3;
 
-    fn mul(self, rhs: Vec3) -> Self::Output {
+    fn mul(self, rhs: Self::Output) -> Self::Output {
         Self::Output {
             x: self as f32 * rhs.x,
             y: self as f32 * rhs.y,
@@ -463,7 +464,7 @@ impl ops::Mul<Vec3> for i8 {
 impl ops::Mul<Vec3> for i16 {
     type Output = Vec3;
 
-    fn mul(self, rhs: Vec3) -> Self::Output {
+    fn mul(self, rhs: Self::Output) -> Self::Output {
         Self::Output {
             x: self as f32 * rhs.x,
             y: self as f32 * rhs.y,
@@ -475,7 +476,7 @@ impl ops::Mul<Vec3> for i16 {
 impl ops::Mul<Vec3> for i32 {
     type Output = Vec3;
 
-    fn mul(self, rhs: Vec3) -> Self::Output {
+    fn mul(self, rhs: Self::Output) -> Self::Output {
         Self::Output {
             x: self as f32 * rhs.x,
             y: self as f32 * rhs.y,
@@ -487,7 +488,7 @@ impl ops::Mul<Vec3> for i32 {
 impl ops::Mul<Vec3> for i64 {
     type Output = Vec3;
 
-    fn mul(self, rhs: Vec3) -> Self::Output {
+    fn mul(self, rhs: Self::Output) -> Self::Output {
         Self::Output {
             x: self as f32 * rhs.x,
             y: self as f32 * rhs.y,
@@ -499,7 +500,7 @@ impl ops::Mul<Vec3> for i64 {
 impl ops::Mul<Vec3> for u8 {
     type Output = Vec3;
 
-    fn mul(self, rhs: Vec3) -> Self::Output {
+    fn mul(self, rhs: Self::Output) -> Self::Output {
         Self::Output {
             x: self as f32 * rhs.x,
             y: self as f32 * rhs.y,
@@ -511,7 +512,7 @@ impl ops::Mul<Vec3> for u8 {
 impl ops::Mul<Vec3> for u16 {
     type Output = Vec3;
 
-    fn mul(self, rhs: Vec3) -> Self::Output {
+    fn mul(self, rhs: Self::Output) -> Self::Output {
         Self::Output {
             x: self as f32 * rhs.x,
             y: self as f32 * rhs.y,
@@ -523,7 +524,7 @@ impl ops::Mul<Vec3> for u16 {
 impl ops::Mul<Vec3> for u32 {
     type Output = Vec3;
 
-    fn mul(self, rhs: Vec3) -> Self::Output {
+    fn mul(self, rhs: Self::Output) -> Self::Output {
         Self::Output {
             x: self as f32 * rhs.x,
             y: self as f32 * rhs.y,
@@ -535,7 +536,7 @@ impl ops::Mul<Vec3> for u32 {
 impl ops::Mul<Vec3> for u64 {
     type Output = Vec3;
 
-    fn mul(self, rhs: Vec3) -> Self::Output {
+    fn mul(self, rhs: Self::Output) -> Self::Output {
         Self::Output {
             x: self as f32 * rhs.x,
             y: self as f32 * rhs.y,
