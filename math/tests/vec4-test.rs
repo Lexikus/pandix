@@ -27,7 +27,7 @@ mod test {
             z: 0.5897678,
             w: 0.7372098,
         };
-        assert_eq!(Vec4::new_normalized(1.0, 2.0, 4.0, 5.0), new_vector);
+        assert_eq!(Vec4::normalize(1.0, 2.0, 4.0, 5.0), new_vector);
 
         let new_vector = Vec4 {
             x: -0.14744195,
@@ -35,7 +35,7 @@ mod test {
             z: -0.5897678,
             w: -0.7372098,
         };
-        assert_eq!(Vec4::new_normalized(-1.0, -2.0, -4.0, -5.0), new_vector);
+        assert_eq!(Vec4::normalize(-1.0, -2.0, -4.0, -5.0), new_vector);
     }
 
     #[test]

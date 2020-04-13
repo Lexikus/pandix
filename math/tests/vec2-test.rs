@@ -20,13 +20,13 @@ mod test {
             x: 0.4472136,
             y: 0.8944272,
         };
-        assert_eq!(Vec2::new_normalized(1.0, 2.0), new_vector);
+        assert_eq!(Vec2::normalize(1.0, 2.0), new_vector);
 
         let new_vector = Vec2 {
             x: -0.4472136,
             y: -0.8944272,
         };
-        assert_eq!(Vec2::new_normalized(-1.0, -2.0), new_vector);
+        assert_eq!(Vec2::normalize(-1.0, -2.0), new_vector);
     }
 
     #[test]

@@ -17,7 +17,7 @@ impl Vec2 {
         Self { x, y }
     }
 
-    pub fn new_normalized(x: f32, y: f32) -> Self {
+    pub fn normalize(x: f32, y: f32) -> Self {
         let mut len = x.powi(2) + y.powi(2);
 
         if len > 0.0 {

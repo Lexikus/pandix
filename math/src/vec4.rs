@@ -19,7 +19,7 @@ impl Vec4 {
         Vec4 { x, y, z, w }
     }
 
-    pub fn new_normalized(x: f32, y: f32, z: f32, w: f32) -> Self {
+    pub fn normalize(x: f32, y: f32, z: f32, w: f32) -> Self {
         let mut len = x.powi(2) + y.powi(2) + z.powi(2) + w.powi(2);
 
         if len > 0.0 {

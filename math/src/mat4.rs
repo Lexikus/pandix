@@ -104,12 +104,12 @@ impl Mat4 {
         }
 
         let z = (from - to).normalized();
-        let x = Vec3::new_normalized(
+        let x = Vec3::normalize(
             up.y * z.z - up.z * z.x,
             up.z * z.x - up.x * z.z,
             up.x * z.y - up.y * z.x,
         );
-        let y = Vec3::new_normalized(
+        let y = Vec3::normalize(
             z.y * x.z - z.z * x.y,
             z.z * x.x - z.x * x.z,
             z.x * x.y - z.y * x.x,

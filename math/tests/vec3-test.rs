@@ -25,14 +25,14 @@ mod test {
             y: 0.43643576,
             z: 0.8728715,
         };
-        assert_eq!(Vec3::new_normalized(1.0, 2.0, 4.0), new_vector);
+        assert_eq!(Vec3::normalize(1.0, 2.0, 4.0), new_vector);
 
         let new_vector = Vec3 {
             x: -0.21821788,
             y: -0.43643576,
             z: -0.8728715,
         };
-        assert_eq!(Vec3::new_normalized(-1.0, -2.0, -4.0), new_vector);
+        assert_eq!(Vec3::normalize(-1.0, -2.0, -4.0), new_vector);
     }
 
     #[test]
