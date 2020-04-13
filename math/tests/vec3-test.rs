@@ -398,58 +398,10 @@ mod test {
         assert_eq!(lhs * 3f64, Vec3::new(3.0, 3.0, 3.0));
 
         let lhs = Vec3::one();
-        assert_eq!(lhs * 3i8, Vec3::new(3.0, 3.0, 3.0));
-
-        let lhs = Vec3::one();
-        assert_eq!(lhs * 3i16, Vec3::new(3.0, 3.0, 3.0));
-
-        let lhs = Vec3::one();
-        assert_eq!(lhs * 3i32, Vec3::new(3.0, 3.0, 3.0));
-
-        let lhs = Vec3::one();
-        assert_eq!(lhs * 3i64, Vec3::new(3.0, 3.0, 3.0));
-
-        let lhs = Vec3::one();
-        assert_eq!(lhs * 3u8, Vec3::new(3.0, 3.0, 3.0));
-
-        let lhs = Vec3::one();
-        assert_eq!(lhs * 3u16, Vec3::new(3.0, 3.0, 3.0));
-
-        let lhs = Vec3::one();
-        assert_eq!(lhs * 3u32, Vec3::new(3.0, 3.0, 3.0));
-
-        let lhs = Vec3::one();
-        assert_eq!(lhs * 3u64, Vec3::new(3.0, 3.0, 3.0));
-
-        let lhs = Vec3::one();
         assert_eq!(3.0f32 * lhs, Vec3::new(3.0, 3.0, 3.0));
 
         let lhs = Vec3::one();
         assert_eq!(3.0f64 * lhs, Vec3::new(3.0, 3.0, 3.0));
-
-        let lhs = Vec3::one();
-        assert_eq!(3i8 * lhs, Vec3::new(3.0, 3.0, 3.0));
-
-        let lhs = Vec3::one();
-        assert_eq!(3i16 * lhs, Vec3::new(3.0, 3.0, 3.0));
-
-        let lhs = Vec3::one();
-        assert_eq!(3i32 * lhs, Vec3::new(3.0, 3.0, 3.0));
-
-        let lhs = Vec3::one();
-        assert_eq!(3i64 * lhs, Vec3::new(3.0, 3.0, 3.0));
-
-        let lhs = Vec3::one();
-        assert_eq!(3u8 * lhs, Vec3::new(3.0, 3.0, 3.0));
-
-        let lhs = Vec3::one();
-        assert_eq!(3u16 * lhs, Vec3::new(3.0, 3.0, 3.0));
-
-        let lhs = Vec3::one();
-        assert_eq!(3u32 * lhs, Vec3::new(3.0, 3.0, 3.0));
-
-        let lhs = Vec3::one();
-        assert_eq!(3u64 * lhs, Vec3::new(3.0, 3.0, 3.0));
 
         let mut lhs = Vec3::one();
         lhs *= 3f32;
@@ -457,38 +409,6 @@ mod test {
 
         let mut lhs = Vec3::one();
         lhs *= 3f64;
-        assert_eq!(lhs, Vec3::new(3.0, 3.0, 3.0));
-
-        let mut lhs = Vec3::one();
-        lhs *= 3i8;
-        assert_eq!(lhs, Vec3::new(3.0, 3.0, 3.0));
-
-        let mut lhs = Vec3::one();
-        lhs *= 3i16;
-        assert_eq!(lhs, Vec3::new(3.0, 3.0, 3.0));
-
-        let mut lhs = Vec3::one();
-        lhs *= 3i32;
-        assert_eq!(lhs, Vec3::new(3.0, 3.0, 3.0));
-
-        let mut lhs = Vec3::one();
-        lhs *= 3i64;
-        assert_eq!(lhs, Vec3::new(3.0, 3.0, 3.0));
-
-        let mut lhs = Vec3::one();
-        lhs *= 3u8;
-        assert_eq!(lhs, Vec3::new(3.0, 3.0, 3.0));
-
-        let mut lhs = Vec3::one();
-        lhs *= 3u16;
-        assert_eq!(lhs, Vec3::new(3.0, 3.0, 3.0));
-
-        let mut lhs = Vec3::one();
-        lhs *= 3u32;
-        assert_eq!(lhs, Vec3::new(3.0, 3.0, 3.0));
-
-        let mut lhs = Vec3::one();
-        lhs *= 3u64;
         assert_eq!(lhs, Vec3::new(3.0, 3.0, 3.0));
     }
 
@@ -500,68 +420,12 @@ mod test {
         let lhs = Vec3::new(3.0, 3.0, 3.0);
         assert_eq!(lhs / 3f64, Vec3::new(1.0, 1.0, 1.0));
 
-        let lhs = Vec3::new(3.0, 3.0, 3.0);
-        assert_eq!(lhs / 3i8, Vec3::new(1.0, 1.0, 1.0));
-
-        let lhs = Vec3::new(3.0, 3.0, 3.0);
-        assert_eq!(lhs / 3i16, Vec3::new(1.0, 1.0, 1.0));
-
-        let lhs = Vec3::new(3.0, 3.0, 3.0);
-        assert_eq!(lhs / 3i32, Vec3::new(1.0, 1.0, 1.0));
-
-        let lhs = Vec3::new(3.0, 3.0, 3.0);
-        assert_eq!(lhs / 3i64, Vec3::new(1.0, 1.0, 1.0));
-
-        let lhs = Vec3::new(3.0, 3.0, 3.0);
-        assert_eq!(lhs / 3u8, Vec3::new(1.0, 1.0, 1.0));
-
-        let lhs = Vec3::new(3.0, 3.0, 3.0);
-        assert_eq!(lhs / 3u16, Vec3::new(1.0, 1.0, 1.0));
-
-        let lhs = Vec3::new(3.0, 3.0, 3.0);
-        assert_eq!(lhs / 3u32, Vec3::new(1.0, 1.0, 1.0));
-
-        let lhs = Vec3::new(3.0, 3.0, 3.0);
-        assert_eq!(lhs / 3u64, Vec3::new(1.0, 1.0, 1.0));
-
         let mut lhs = Vec3::new(3.0, 3.0, 3.0);
         lhs /= 3f32;
         assert_eq!(lhs, Vec3::new(1.0, 1.0, 1.0));
 
         let mut lhs = Vec3::new(3.0, 3.0, 3.0);
         lhs /= 3f64;
-        assert_eq!(lhs, Vec3::new(1.0, 1.0, 1.0));
-
-        let mut lhs = Vec3::new(3.0, 3.0, 3.0);
-        lhs /= 3i8;
-        assert_eq!(lhs, Vec3::new(1.0, 1.0, 1.0));
-
-        let mut lhs = Vec3::new(3.0, 3.0, 3.0);
-        lhs /= 3i16;
-        assert_eq!(lhs, Vec3::new(1.0, 1.0, 1.0));
-
-        let mut lhs = Vec3::new(3.0, 3.0, 3.0);
-        lhs /= 3i32;
-        assert_eq!(lhs, Vec3::new(1.0, 1.0, 1.0));
-
-        let mut lhs = Vec3::new(3.0, 3.0, 3.0);
-        lhs /= 3i64;
-        assert_eq!(lhs, Vec3::new(1.0, 1.0, 1.0));
-
-        let mut lhs = Vec3::new(3.0, 3.0, 3.0);
-        lhs /= 3u8;
-        assert_eq!(lhs, Vec3::new(1.0, 1.0, 1.0));
-
-        let mut lhs = Vec3::new(3.0, 3.0, 3.0);
-        lhs /= 3u16;
-        assert_eq!(lhs, Vec3::new(1.0, 1.0, 1.0));
-
-        let mut lhs = Vec3::new(3.0, 3.0, 3.0);
-        lhs /= 3u32;
-        assert_eq!(lhs, Vec3::new(1.0, 1.0, 1.0));
-
-        let mut lhs = Vec3::new(3.0, 3.0, 3.0);
-        lhs /= 3u64;
         assert_eq!(lhs, Vec3::new(1.0, 1.0, 1.0));
     }
 }

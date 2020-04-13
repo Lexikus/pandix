@@ -11,6 +11,7 @@ pub use vec3::Vec3;
 pub use vec4::Vec4;
 
 pub use std::f32::consts::PI;
+pub use std::f32::EPSILON;
 
 pub fn health() {
     println!("math reachable");
