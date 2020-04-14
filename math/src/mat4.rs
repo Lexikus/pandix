@@ -770,26 +770,7 @@ impl ops::Mul<f64> for Mat4 {
     type Output = Self;
 
     fn mul(self, rhs: f64) -> Self::Output {
-        Self::Output {
-            cols: [
-                self.cols[0] * rhs as f32,
-                self.cols[1] * rhs as f32,
-                self.cols[2] * rhs as f32,
-                self.cols[3] * rhs as f32,
-                self.cols[4] * rhs as f32,
-                self.cols[5] * rhs as f32,
-                self.cols[6] * rhs as f32,
-                self.cols[7] * rhs as f32,
-                self.cols[8] * rhs as f32,
-                self.cols[9] * rhs as f32,
-                self.cols[10] * rhs as f32,
-                self.cols[11] * rhs as f32,
-                self.cols[12] * rhs as f32,
-                self.cols[13] * rhs as f32,
-                self.cols[14] * rhs as f32,
-                self.cols[15] * rhs as f32,
-            ],
-        }
+        self * rhs as f32
     }
 }
 
@@ -797,26 +778,7 @@ impl ops::Mul<Mat4> for f32 {
     type Output = Mat4;
 
     fn mul(self, rhs: Self::Output) -> Self::Output {
-        Self::Output {
-            cols: [
-                self * rhs.cols[0],
-                self * rhs.cols[1],
-                self * rhs.cols[2],
-                self * rhs.cols[3],
-                self * rhs.cols[4],
-                self * rhs.cols[5],
-                self * rhs.cols[6],
-                self * rhs.cols[7],
-                self * rhs.cols[8],
-                self * rhs.cols[9],
-                self * rhs.cols[10],
-                self * rhs.cols[11],
-                self * rhs.cols[12],
-                self * rhs.cols[13],
-                self * rhs.cols[14],
-                self * rhs.cols[15],
-            ],
-        }
+        rhs * self
     }
 }
 
@@ -824,26 +786,7 @@ impl ops::Mul<Mat4> for f64 {
     type Output = Mat4;
 
     fn mul(self, rhs: Self::Output) -> Self::Output {
-        Self::Output {
-            cols: [
-                self as f32 * rhs.cols[0],
-                self as f32 * rhs.cols[1],
-                self as f32 * rhs.cols[2],
-                self as f32 * rhs.cols[3],
-                self as f32 * rhs.cols[4],
-                self as f32 * rhs.cols[5],
-                self as f32 * rhs.cols[6],
-                self as f32 * rhs.cols[7],
-                self as f32 * rhs.cols[8],
-                self as f32 * rhs.cols[9],
-                self as f32 * rhs.cols[10],
-                self as f32 * rhs.cols[11],
-                self as f32 * rhs.cols[12],
-                self as f32 * rhs.cols[13],
-                self as f32 * rhs.cols[14],
-                self as f32 * rhs.cols[15],
-            ],
-        }
+        rhs * self as f32
     }
 }
 
@@ -971,21 +914,6 @@ impl ops::MulAssign<f32> for Mat4 {
 
 impl ops::MulAssign<f64> for Mat4 {
     fn mul_assign(&mut self, rhs: f64) {
-        self.cols[0] = self.cols[0] * rhs as f32;
-        self.cols[1] = self.cols[1] * rhs as f32;
-        self.cols[2] = self.cols[2] * rhs as f32;
-        self.cols[3] = self.cols[3] * rhs as f32;
-        self.cols[4] = self.cols[4] * rhs as f32;
-        self.cols[5] = self.cols[5] * rhs as f32;
-        self.cols[6] = self.cols[6] * rhs as f32;
-        self.cols[7] = self.cols[7] * rhs as f32;
-        self.cols[8] = self.cols[8] * rhs as f32;
-        self.cols[9] = self.cols[9] * rhs as f32;
-        self.cols[10] = self.cols[10] * rhs as f32;
-        self.cols[11] = self.cols[11] * rhs as f32;
-        self.cols[12] = self.cols[12] * rhs as f32;
-        self.cols[13] = self.cols[13] * rhs as f32;
-        self.cols[14] = self.cols[14] * rhs as f32;
-        self.cols[15] = self.cols[15] * rhs as f32;
+        *self *= rhs as f32;
     }
 }

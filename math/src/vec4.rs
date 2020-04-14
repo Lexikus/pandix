@@ -294,12 +294,7 @@ impl ops::Mul<f64> for Vec4 {
     type Output = Self;
 
     fn mul(self, rhs: f64) -> Self::Output {
-        Self::Output {
-            x: self.x * rhs as f32,
-            y: self.y * rhs as f32,
-            z: self.z * rhs as f32,
-            w: self.w * rhs as f32,
-        }
+        self * rhs as f32
     }
 }
 
@@ -307,12 +302,7 @@ impl ops::Mul<Vec4> for f32 {
     type Output = Vec4;
 
     fn mul(self, rhs: Self::Output) -> Self::Output {
-        Self::Output {
-            x: self * rhs.x,
-            y: self * rhs.y,
-            z: self * rhs.z,
-            w: self * rhs.w,
-        }
+        rhs * self
     }
 }
 
@@ -320,12 +310,7 @@ impl ops::Mul<Vec4> for f64 {
     type Output = Vec4;
 
     fn mul(self, rhs: Self::Output) -> Self::Output {
-        Self::Output {
-            x: self as f32 * rhs.x,
-            y: self as f32 * rhs.y,
-            z: self as f32 * rhs.z,
-            w: self as f32 * rhs.w,
-        }
+        rhs * self as f32
     }
 }
 
@@ -342,12 +327,7 @@ impl ops::MulAssign<f32> for Vec4 {
 
 impl ops::MulAssign<f64> for Vec4 {
     fn mul_assign(&mut self, rhs: f64) {
-        *self = Self {
-            x: self.x * rhs as f32,
-            y: self.y * rhs as f32,
-            z: self.z * rhs as f32,
-            w: self.w * rhs as f32,
-        };
+        *self *= rhs as f32
     }
 }
 
@@ -368,12 +348,7 @@ impl ops::Div<f64> for Vec4 {
     type Output = Self;
 
     fn div(self, rhs: f64) -> Self::Output {
-        Self::Output {
-            x: self.x / rhs as f32,
-            y: self.y / rhs as f32,
-            z: self.z / rhs as f32,
-            w: self.w / rhs as f32,
-        }
+        self / rhs as f32
     }
 }
 
@@ -390,12 +365,7 @@ impl ops::DivAssign<f32> for Vec4 {
 
 impl ops::DivAssign<f64> for Vec4 {
     fn div_assign(&mut self, rhs: f64) {
-        *self = Self {
-            x: self.x / rhs as f32,
-            y: self.y / rhs as f32,
-            z: self.z / rhs as f32,
-            w: self.w / rhs as f32,
-        };
+        *self /= rhs as f32
     }
 }
 

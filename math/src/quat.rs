@@ -84,22 +84,25 @@ impl Quat {
     }
 
     pub fn inverse(rotation: Self) -> Self {
-        let sqrt = rotation.x * rotation.x + rotation.y * rotation.y + rotation.z * rotation.z + rotation.w * rotation.w;
+        let sqrt = rotation.x * rotation.x
+            + rotation.y * rotation.y
+            + rotation.z * rotation.z
+            + rotation.w * rotation.w;
         if sqrt == 0.0 {
             return Self {
                 x: 0.0,
                 y: 0.0,
                 z: 0.0,
                 w: 0.0,
-            }
+            };
         }
         let inv_sqrt = 1.0 / sqrt;
 
         Self {
             x: -rotation.x * inv_sqrt,
-            y: -rotation.x * inv_sqrt,
-            z: -rotation.x * inv_sqrt,
-            w: rotation.x * inv_sqrt,
+            y: -rotation.y * inv_sqrt,
+            z: -rotation.z * inv_sqrt,
+            w: rotation.w * inv_sqrt,
         }
     }
 
@@ -129,7 +132,81 @@ impl Quat {
         }
     }
 
-    // pub fn euler_angles(self) -> Vec3 {
+    pub fn rotate_x(&mut self, angle_rad: f32) {}
 
-    // }
+    pub fn rotate_y(&mut self, angle_rad: f32) {}
+
+    pub fn rotate_z(&mut self, angle_rad: f32) {}
+}
+
+impl Default for Quat {
+    fn default() -> Self {
+        Self::new(0.0, 0.0, 0.0, 0.0)
+    }
+}
+
+impl fmt::Display for Quat {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "Quat {{ x: {}, y: {} z: {}, w: {} }}",
+            self.x, self.y, self.z, self.w
+        )
+    }
+}
+
+impl ops::Mul for Quat {
+    type Output = Self;
+
+    fn mul(self, rhs: Self::Output) -> Self::Output {
+        let ax = self.x;
+        let ay = self.y;
+        let az = self.z;
+        let aw = self.w;
+
+        let bx = rhs.x;
+        let by = rhs.y;
+        let bz = rhs.z;
+        let bw = rhs.w;
+
+        Self::Output {
+            x: ax * bw + aw * bx + ay * bz - az * by,
+            y: ay * bw + aw * by + az * bx - ax * bz,
+            z: az * bw + aw * bz + ax * by - ay * bx,
+            w: aw * bw - ax * bx - ay * by - az * bz,
+        }
+    }
+}
+
+impl ops::Mul<Vec3> for Quat {
+    type Output = Vec3;
+
+    fn mul(self, rhs: Self::Output) -> Self::Output {
+        let x2 = self.x * 2.0;
+        let y2 = self.y * 2.0;
+        let z2 = self.z * 2.0;
+        let xx = self.x * x2;
+        let yy = self.y * y2;
+        let zz = self.z * z2;
+        let xy = self.x * y2;
+        let xz = self.x * z2;
+        let yz = self.y * z2;
+        let wx = self.w * x2;
+        let wy = self.w * y2;
+        let wz = self.w * z2;
+
+        Self::Output {
+            x: (1.0 - (yy + zz)) * rhs.x + (xy - wz) * rhs.y + (xz + wy) * rhs.z,
+            y: (xy + wz) * rhs.x + (1.0 - (xx + zz)) * rhs.y + (yz - wx) * rhs.z,
+            z: (xz - wy) * rhs.x + (yz + wx) * rhs.y + (1.0 - (xx + yy)) * rhs.z,
+        }
+    }
+}
+
+impl ops::Mul<Quat> for Vec3 {
+    type Output = Self;
+
+    fn mul(self, rhs: Quat) -> Self::Output {
+        rhs * self
+    }
 }

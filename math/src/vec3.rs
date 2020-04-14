@@ -321,11 +321,7 @@ impl ops::Mul<f64> for Vec3 {
     type Output = Self;
 
     fn mul(self, rhs: f64) -> Self::Output {
-        Self::Output {
-            x: self.x * rhs as f32,
-            y: self.y * rhs as f32,
-            z: self.z * rhs as f32,
-        }
+        self * rhs as f32
     }
 }
 
@@ -333,11 +329,7 @@ impl ops::Mul<Vec3> for f32 {
     type Output = Vec3;
 
     fn mul(self, rhs: Self::Output) -> Self::Output {
-        Self::Output {
-            x: self * rhs.x,
-            y: self * rhs.y,
-            z: self * rhs.z,
-        }
+        rhs * self
     }
 }
 
@@ -345,11 +337,7 @@ impl ops::Mul<Vec3> for f64 {
     type Output = Vec3;
 
     fn mul(self, rhs: Self::Output) -> Self::Output {
-        Self::Output {
-            x: self as f32 * rhs.x,
-            y: self as f32 * rhs.y,
-            z: self as f32 * rhs.z,
-        }
+        rhs * self
     }
 }
 
@@ -365,11 +353,7 @@ impl ops::MulAssign<f32> for Vec3 {
 
 impl ops::MulAssign<f64> for Vec3 {
     fn mul_assign(&mut self, rhs: f64) {
-        *self = Self {
-            x: self.x * rhs as f32,
-            y: self.y * rhs as f32,
-            z: self.z * rhs as f32,
-        };
+        *self *= rhs as f32;
     }
 }
 
@@ -389,11 +373,7 @@ impl ops::Div<f64> for Vec3 {
     type Output = Self;
 
     fn div(self, rhs: f64) -> Self::Output {
-        Self::Output {
-            x: self.x / rhs as f32,
-            y: self.y / rhs as f32,
-            z: self.z / rhs as f32,
-        }
+        self / rhs as f32
     }
 }
 
@@ -409,11 +389,7 @@ impl ops::DivAssign<f32> for Vec3 {
 
 impl ops::DivAssign<f64> for Vec3 {
     fn div_assign(&mut self, rhs: f64) {
-        *self = Self {
-            x: self.x / rhs as f32,
-            y: self.y / rhs as f32,
-            z: self.z / rhs as f32,
-        };
+        *self /= rhs as f32
     }
 }
 
