@@ -13,8 +13,8 @@ mod test {
     fn mat4_new() {
         let x = Vec4::one();
         let y = Vec4::one();
-        let w = Vec4::one();
         let z = Vec4::one();
+        let w = Vec4::one();
         let mat = Mat4 {
             cols: [
                 x.x, x.y, x.z, x.w, y.x, y.y, y.z, y.w, z.x, z.y, z.z, z.w, w.x, w.y, w.z, w.w,
