@@ -6,6 +6,7 @@ use std::ops;
 use super::Quat;
 use super::Vec3;
 use super::Vec4;
+
 use super::EPSILON;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
@@ -212,17 +213,17 @@ impl Mat4 {
     pub fn from_translate(translate: Vec3) -> Self {
         Self {
             cols: [
+                1.0,
                 0.0,
                 0.0,
                 0.0,
                 0.0,
+                1.0,
                 0.0,
                 0.0,
                 0.0,
                 0.0,
-                0.0,
-                0.0,
-                0.0,
+                1.0,
                 0.0,
                 translate.x,
                 translate.y,

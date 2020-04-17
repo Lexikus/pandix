@@ -54,10 +54,7 @@ mod test {
         mat_result.translate(Vec2::new(5.0, 6.0));
         mat_result.rotate(0.2);
 
-        assert_eq!(
-            Mat3::tr(Vec2::new(5.0, 6.0), 0.2),
-            mat_result
-        );
+        assert_eq!(Mat3::tr(Vec2::new(5.0, 6.0), 0.2), mat_result);
     }
 
     #[test]
@@ -84,7 +81,17 @@ mod test {
     fn mat3_from_rotation() {
         let quat = 0.15;
         let mat = Mat3 {
-            cols: [0.9887711, 0.14943814, 0.0, -0.14943814, 0.9887711, 0.0, 0.0, 0.0, 1.0],
+            cols: [
+                0.9887711,
+                0.14943814,
+                0.0,
+                -0.14943814,
+                0.9887711,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+            ],
         };
 
         assert_eq!(Mat3::from_rotation(quat), mat);
@@ -94,11 +101,7 @@ mod test {
     fn mat3_determinant() {
         let determinant = -0.018000003;
         let mat = Mat3 {
-            cols: [
-                0.5, 0.1, 0.2,
-                0.1, 0.2, 0.4,
-                0.2, 0.4, 0.6,
-            ]
+            cols: [0.5, 0.1, 0.2, 0.1, 0.2, 0.4, 0.2, 0.4, 0.6],
         };
 
         assert_eq!(mat.determinant(), determinant);
@@ -118,16 +121,12 @@ mod test {
     fn mat3_inverse() {
         // if the determinant of the matrix is zero, you get a zero matrix back.
         let mut mat = Mat3 {
-            cols: [
-                0.5, 0.1, 0.2,
-                0.1, 0.2, 0.4,
-                0.2, 0.4, 0.6,
-            ]
+            cols: [0.5, 0.1, 0.2, 0.1, 0.2, 0.4, 0.2, 0.4, 0.6],
         };
 
         let mat_inverse = Mat3::new(
             Vec3::new(2.222222, -1.111111, -0.0),
-            Vec3::new(-1.111111, -14.444443, 9.999999,),
+            Vec3::new(-1.111111, -14.444443, 9.999999),
             Vec3::new(-0.0, 9.999999, -4.9999995),
         );
 
@@ -147,17 +146,13 @@ mod test {
     fn mat3_is_transpose() {
         // if the determinant of the matrix is zero, you get a zero matrix back.
         let mut mat = Mat3 {
-            cols: [
-                1.0, 2.0, 3.0,
-                4.0, 5.0, 6.0,
-                7.0, 8.0, 9.0,
-            ]
+            cols: [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0],
         };
 
         let mat_transpose = Mat3::new(
-            Vec3::new(1.0,4.0,7.0,),
-            Vec3::new(2.0,5.0,8.0,),
-            Vec3::new(3.0,6.0,9.0,),
+            Vec3::new(1.0, 4.0, 7.0),
+            Vec3::new(2.0, 5.0, 8.0),
+            Vec3::new(3.0, 6.0, 9.0),
         );
         mat.transpose();
         assert_eq!(mat, mat_transpose);
@@ -180,8 +175,16 @@ mod test {
         let mut mat = Mat3::identity();
         let mat_rotate = Mat3 {
             cols: [
-                0.96377087, 0.26673144, 0.0, -0.26673144, 0.96377087, 0.0, 0.0, 0.0, 1.0
-            ]
+                0.96377087,
+                0.26673144,
+                0.0,
+                -0.26673144,
+                0.96377087,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+            ],
         };
         mat.rotate(0.27);
         assert_eq!(mat, mat_rotate);
@@ -211,10 +214,8 @@ mod test {
             Vec3::new(5.0, 6.0, 7.0),
             Vec3::new(9.0, 10.0, 11.0),
         );
-        let mat_result = Mat3{
-            cols: [
-                38.0, 44.0, 50.0, 98.0, 116.0, 134.0, 158.0, 188.0, 218.0
-            ]
+        let mat_result = Mat3 {
+            cols: [38.0, 44.0, 50.0, 98.0, 116.0, 134.0, 158.0, 188.0, 218.0],
         };
         assert_eq!(mat_left * mat_right, mat_result);
 
