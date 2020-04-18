@@ -160,13 +160,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "escape-hell"
-version = "0.0.1"
-dependencies = [
- "engine 0.0.1",
-]
-
-[[package]]
 name = "fuchsia-cprng"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -376,6 +369,17 @@ version = "0.2.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "malloc_buf 0.0.6 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "pandix"
+version = "0.0.1"
+dependencies = [
+ "common 0.0.1",
+ "context 0.0.1",
+ "engine 0.0.1",
+ "graphic 0.0.1",
+ "math 0.0.1",
 ]
 
 [[package]]
