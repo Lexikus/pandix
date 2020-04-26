@@ -1,26 +1,68 @@
 #![allow(dead_code)]
-
-extern crate common;
 extern crate context;
+extern crate ecs;
 extern crate graphic;
 extern crate math;
 
-use context::canvas::Canvas;
-use context::input::Input;
-use context::keyboard::Key;
+mod scene;
+mod system;
 
-// TODO(alex): abstract the setup in this struct. Basically, we need to give the window a name.
-//             Also, we have to specify the size of the window or is it fullscreen etc.
-//             all the crates settings needs to be modifed via the engine before it can be run.
-pub struct Engine {}
+use std::collections::HashMap;
+
+use ecs::prelude::*;
+
+use context::canvas::Canvas;
+
+use scene::Scene;
+
+struct Test;
+
+pub struct Engine {
+    universe: Universe,
+    active_scene: i16,
+    scenes: HashMap<i16, Scene>,
+    render_system: Schedule,
+    systems: Vec<Schedule>,
+}
 
 impl Engine {
     pub fn new() -> Self {
-        Engine {}
+        Engine {
+            universe: Universe::new(),
+            active_scene: -1,
+            scenes: HashMap::new(),
+            render_system: system::renderer::create(),
+            systems: Vec::new(),
+        }
     }
 
-    pub fn run(&self) {
-        let mut input = Input::new();
+    pub fn create_scene(&mut self, key: u8) {
+        let world = self.universe.create_world();
+        let scene = Scene::new(world);
+
+        self.scenes.insert(key as i16, scene);
+
+        if self.active_scene == -1 {
+            self.active_scene = 0;
+        }
+    }
+
+    pub fn add_system(&mut self, system: Schedule) {
+        self.systems.push(system);
+    }
+
+    pub fn add_entities<T, C>(&mut self, scene: u8, tags: T, components: C)
+    where
+        T: ecs::TagSet + ecs::TagLayout + for<'a> ecs::Filter<ecs::ChunksetFilterData<'a>>,
+        C: ecs::IntoComponentSource,
+    {
+        if let Some(scene) = self.scenes.get_mut(&(scene as i16)) {
+            scene.world_mut().insert(tags, components);
+        }
+    }
+
+    // TODO: return Error
+    pub fn run(&mut self) {
         let mut canvas = Canvas::new("fsdf", 400, 400).unwrap();
 
         graphic::api::load_gpu_function_pointers(|proc_address| {
@@ -29,24 +71,20 @@ impl Engine {
 
         while !canvas.should_close() {
             canvas.on_update_begin();
-            canvas.process_events(&mut input);
 
             graphic::api::clear();
             graphic::api::clear_color(0.0, 0.0, 1.0, 1.0);
 
-            if input.is_key_pressed(Key::W) {
-                println!("==> W is pressed");
-            }
+            let world = self.scenes.get_mut(&self.active_scene).unwrap().world_mut();
 
-            if input.is_key_released(Key::W) {
-                println!("==> W is released");
-            }
+            // Systems
+            // Game systems
+            self.systems
+                .iter_mut()
+                .for_each(|schedule| schedule.execute(world));
+            // Engine render system
+            self.render_system.execute(world);
 
-            if input.is_key_hold(Key::S) {
-                println!("==> S is hold");
-            }
-
-            input.on_update_end();
             canvas.on_update_end();
         }
     }

@@ -10,14 +10,16 @@ members = [
     "graphic",
     "common",
     "context",
-    "engine"
+    "engine",
+    "ecs",
+    "playground"
 ]
 
 [dependencies]
 engine = { path = "engine" }
+ecs = { path = "ecs" }
 math = { path = "math" }
-
-[dev-dependencies]
 graphic = { path = "graphic" }
 common = { path = "common" }
 context = { path = "context" }
+playground = { path = "playground" }

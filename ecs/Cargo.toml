@@ -1,5 +1,5 @@
 [package]
-name = "engine"
+name = "ecs"
 version = "0.0.1"
 authors = ["Alexander <alexander.bifulco@gmail.com>"]
 edition = "2018"
@@ -7,8 +7,4 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-math = { path = "../math" }
-graphic = { path = "../graphic" }
-common = { path = "../common" }
-context = { path = "../context" }
-ecs = { path = "../ecs" }
+legion = "0.2.1"
