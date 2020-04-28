@@ -7,4 +7,4 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-legion = "0.2.1"
+legion = { git = "https://github.com/TomGillen/legion", rev="bd441f4811e7a9e877a0f479a674bbdbf4e4cda3" }

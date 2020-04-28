@@ -19,7 +19,6 @@ struct Model(usize);
 #[derive(Clone, Copy, Debug, PartialEq)]
 struct Static;
 
-
 pub fn run() {
     // Create a world to store our entities
     let universe = Universe::new();
@@ -28,15 +27,15 @@ pub fn run() {
     // Create entities with `Position` and `Velocity` data
     world.insert(
         (),
-        (0..999).map(|_| (Position { x: 0.0, y: 0.0 }, Velocity { dx: 1.0, dy: 1.0 }))
+        (0..999).map(|_| (Position { x: 0.0, y: 0.0 }, Velocity { dx: 1.0, dy: 1.0 })),
     );
 
     // Create entities with `Position` data and a shared `Model` data, tagged as `Static`
     // Shared data values are shared across many entities,
     // and enable further batch processing and filtering use cases
-    let entities: &[Entity] = world.insert(
+    let _entities: &[Entity] = world.insert(
         (Model(5), Static),
-        (0..999).map(|_| (Position { x: 0.0, y: 0.0 },))
+        (0..999).map(|_| (Position { x: 0.0, y: 0.0 },)),
     );
 
     // Create a query which finds all `Position` and `Velocity` components
@@ -51,34 +50,32 @@ pub fn run() {
     // -----------------------------------------------------------------
     let mut systems: Vec<Box<dyn Fn(&mut World) -> ()>> = Vec::new();
     systems.push(Box::new(|m| {
-        let query = <(Read<Velocity>)>::query();
+        let query = <Read<Velocity>>::query();
         query.iter(m).for_each(|entity| println!("{:?}", entity));
     }));
-    systems
-        .iter()
-        .for_each(|f| f(&mut world));
+    systems.iter().for_each(|f| f(&mut world));
     // -----------------------------------------------------------------
 
     // -----------------------------------------------------------------
     let mut systems: Vec<Schedule> = Vec::new();
     let read_velocity_system = SystemBuilder::new("ReadVelocitySystem")
-        .with_query(<(Read<Velocity>)>::query())
+        .with_query(<Read<Velocity>>::query())
         .build(|_, world, _, queries| {
-            queries.iter(world).for_each(|entity| println!("{:?}", entity));
+            queries
+                .iter(world)
+                .for_each(|entity| println!("{:?}", entity));
         });
 
-    let schedule = Schedule::builder()
-        .add_system(read_velocity_system)
-        .build();
+    let schedule = Schedule::builder().add_system(read_velocity_system).build();
 
     systems.push(schedule);
-    systems
-        .iter_mut()
-        .for_each(|s| s.execute(&mut world));
+    systems.iter_mut().for_each(|s| s.execute(&mut world));
     // -----------------------------------------------------------------
 
     // -----------------------------------------------------------------
-    let query = <(Read<Velocity>)>::query();
-    query.iter(&mut world).for_each(|entity| println!("{:?}", entity));
+    let query = <Read<Velocity>>::query();
+    query
+        .iter(&mut world)
+        .for_each(|entity| println!("{:?}", entity));
     // -----------------------------------------------------------------
 }

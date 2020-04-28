@@ -4,6 +4,7 @@ extern crate ecs;
 extern crate graphic;
 extern crate math;
 
+pub mod resource;
 mod scene;
 mod system;
 
@@ -15,24 +16,25 @@ use context::canvas::Canvas;
 
 use scene::Scene;
 
-struct Test;
-
 pub struct Engine {
     universe: Universe,
-    active_scene: i16,
     scenes: HashMap<i16, Scene>,
     render_system: Schedule,
     systems: Vec<Schedule>,
+    resources: Resources,
 }
 
 impl Engine {
     pub fn new() -> Self {
+        let mut resources = Resources::default();
+        resources.insert(resource::SceneState::new());
+
         Engine {
             universe: Universe::new(),
-            active_scene: -1,
             scenes: HashMap::new(),
             render_system: system::renderer::create(),
             systems: Vec::new(),
+            resources,
         }
     }
 
@@ -42,13 +44,20 @@ impl Engine {
 
         self.scenes.insert(key as i16, scene);
 
-        if self.active_scene == -1 {
-            self.active_scene = 0;
+        let scene_state = &mut self.resources.get_mut::<resource::SceneState>().unwrap();
+        if scene_state.current_scene == -1 {
+            scene_state.current_scene = 0;
         }
     }
 
     pub fn add_system(&mut self, system: Schedule) {
         self.systems.push(system);
+    }
+
+    pub fn add_scene_system(&mut self, scene: u8, system: Schedule) {
+        if let Some(scene) = self.scenes.get_mut(&(scene as i16)) {
+            scene.add_system(system);
+        }
     }
 
     pub fn add_entities<T, C>(&mut self, scene: u8, tags: T, components: C)
@@ -61,29 +70,45 @@ impl Engine {
         }
     }
 
+    pub fn add_resource<R>(&mut self, resource: R)
+    where
+        R: ecs::Resource,
+    {
+        self.resources.insert(resource);
+    }
+
     // TODO: return Error
     pub fn run(&mut self) {
-        let mut canvas = Canvas::new("fsdf", 400, 400).unwrap();
+        let mut canvas = Canvas::new("pandix engine", 400, 400).unwrap();
 
         graphic::api::load_gpu_function_pointers(|proc_address| {
             canvas.get_graphic_specs(proc_address)
         });
 
+        let resource = &mut self.resources;
         while !canvas.should_close() {
             canvas.on_update_begin();
 
             graphic::api::clear();
             graphic::api::clear_color(0.0, 0.0, 1.0, 1.0);
 
-            let world = self.scenes.get_mut(&self.active_scene).unwrap().world_mut();
+            let current_scene = resource
+                .get::<resource::SceneState>()
+                .unwrap()
+                .current_scene;
+            // TODO: remove unwrap
+            let scene = self.scenes.get_mut(&current_scene).unwrap();
 
-            // Systems
-            // Game systems
+            // execute global systems
             self.systems
                 .iter_mut()
-                .for_each(|schedule| schedule.execute(world));
-            // Engine render system
-            self.render_system.execute(world);
+                .for_each(|schedule| schedule.execute(scene.world_mut(), resource));
+
+            // execute scene systems
+            scene.execute_systems(resource);
+
+            // execute engine render system
+            self.render_system.execute(scene.world_mut(), resource);
 
             canvas.on_update_end();
         }
