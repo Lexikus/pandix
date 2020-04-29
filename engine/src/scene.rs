@@ -1,8 +1,8 @@
-extern crate ecs;
+extern crate legion;
 
-use ecs::Resources;
-use ecs::Schedule;
-use ecs::World;
+use legion::systems::resource::Resources;
+use legion::systems::schedule::Schedule;
+use legion::world::World;
 
 pub struct Scene {
     world: World,

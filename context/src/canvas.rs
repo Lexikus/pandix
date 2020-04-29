@@ -5,6 +5,7 @@ extern crate glfw;
 const OPENGL_MAJOR_VERSION: u32 = 4;
 const OPENGL_MINOR_VERSION: u32 = 0;
 
+use super::input;
 use super::input::Input;
 use super::keyboard::Button;
 
@@ -115,7 +116,7 @@ impl Canvas {
                     let key = key.into();
                     let modifier = modifiers.into();
 
-                    input.update(key, Button::new(key, action, modifier));
+                    input::update(input, key, Button::new(key, action, modifier))
                 }
                 WindowEvent::Size(x, y) => {
                     println!("{} {}", x, y);

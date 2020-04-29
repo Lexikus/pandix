@@ -1,6 +1,7 @@
-extern crate ecs;
+extern crate legion;
 
-use ecs::prelude::*;
+use legion::systems::schedule::Schedule;
+use legion::systems::SystemBuilder;
 
 pub fn create() -> Schedule {
     let system = SystemBuilder::new("RendererSystem").build(|_, _, _, _| ());

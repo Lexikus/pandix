@@ -250,8 +250,8 @@ version = "0.0.1"
 dependencies = [
  "common 0.0.1",
  "context 0.0.1",
- "ecs 0.0.1",
  "graphic 0.0.1",
+ "legion 0.2.1 (git+https://github.com/TomGillen/legion?rev=bd441f4811e7a9e877a0f479a674bbdbf4e4cda3)",
  "math 0.0.1",
 ]
 

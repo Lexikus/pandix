@@ -1,5 +1,6 @@
 extern crate context;
 
+use context::input;
 use context::input::Input;
 use context::keyboard::Action;
 use context::keyboard::Button;
@@ -14,21 +15,24 @@ mod test {
     fn is_key_hold() {
         let mut input = Input::new();
 
-        input.update(
+        input::update(
+            &mut input,
             Key::A,
             Button::new(Key::A, Action::Press, Modifier::Unknown),
         );
 
         assert!(input.is_key_hold(Key::A));
 
-        input.update(
+        input::update(
+            &mut input,
             Key::A,
             Button::new(Key::A, Action::Repeat, Modifier::Unknown),
         );
 
         assert!(input.is_key_hold(Key::A));
 
-        input.update(
+        input::update(
+            &mut input,
             Key::A,
             Button::new(Key::A, Action::Release, Modifier::Unknown),
         );
@@ -40,21 +44,24 @@ mod test {
     fn is_key_pressed() {
         let mut input = Input::new();
 
-        input.update(
+        input::update(
+            &mut input,
             Key::A,
             Button::new(Key::A, Action::Press, Modifier::Unknown),
         );
 
         assert!(input.is_key_pressed(Key::A));
 
-        input.update(
+        input::update(
+            &mut input,
             Key::A,
             Button::new(Key::A, Action::Repeat, Modifier::Unknown),
         );
 
         assert!(!input.is_key_pressed(Key::A));
 
-        input.update(
+        input::update(
+            &mut input,
             Key::A,
             Button::new(Key::A, Action::Release, Modifier::Unknown),
         );
@@ -66,35 +73,40 @@ mod test {
     fn is_key_released() {
         let mut input = Input::new();
 
-        input.update(
+        input::update(
+            &mut input,
             Key::A,
             Button::new(Key::A, Action::Press, Modifier::Unknown),
         );
 
         assert!(!input.is_key_released(Key::A));
 
-        input.update(
+        input::update(
+            &mut input,
             Key::A,
             Button::new(Key::A, Action::Repeat, Modifier::Unknown),
         );
 
         assert!(!input.is_key_released(Key::A));
 
-        input.update(
+        input::update(
+            &mut input,
             Key::A,
             Button::new(Key::A, Action::Release, Modifier::Unknown),
         );
 
         assert!(input.is_key_released(Key::A));
 
-        input.update(
+        input::update(
+            &mut input,
             Key::A,
             Button::new(Key::A, Action::Press, Modifier::Unknown),
         );
 
         assert!(!input.is_key_released(Key::A));
 
-        input.update(
+        input::update(
+            &mut input,
             Key::A,
             Button::new(Key::A, Action::Release, Modifier::Unknown),
         );
@@ -110,10 +122,11 @@ mod test {
         assert!(!input.is_key_pressed(Key::A));
 
         // one frame later
-        input.on_update_end();
+        input::clean_up(&mut input);
 
         // context updates input system
-        input.update(
+        input::update(
+            &mut input,
             Key::A,
             Button::new(Key::A, Action::Press, Modifier::Unknown),
         );
@@ -122,7 +135,7 @@ mod test {
         assert!(input.is_key_pressed(Key::A));
 
         // one frame later
-        input.on_update_end();
+        input::clean_up(&mut input);
 
         // key should be not pressed anymore. its state should be repeat
         assert!(!input.is_key_pressed(Key::A));
@@ -136,10 +149,11 @@ mod test {
         assert!(!input.is_key_released(Key::A));
 
         // one frame later
-        input.on_update_end();
+        input::clean_up(&mut input);
 
         // context updates input system
-        input.update(
+        input::update(
+            &mut input,
             Key::A,
             Button::new(Key::A, Action::Press, Modifier::Unknown),
         );
@@ -147,14 +161,15 @@ mod test {
         // Key should still not be released
         assert!(!input.is_key_released(Key::A));
 
-        input.on_update_end();
+        input::clean_up(&mut input);
 
         // Key should still not be released
         assert!(!input.is_key_released(Key::A));
 
-        input.on_update_end();
+        input::clean_up(&mut input);
 
-        input.update(
+        input::update(
+            &mut input,
             Key::A,
             Button::new(Key::A, Action::Release, Modifier::Unknown),
         );
@@ -162,7 +177,7 @@ mod test {
         // Key should be released
         assert!(input.is_key_released(Key::A));
 
-        input.on_update_end();
+        input::clean_up(&mut input);
 
         // Key should not be released
         assert!(!input.is_key_released(Key::A));

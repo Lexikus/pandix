@@ -1,13 +1,12 @@
 extern crate legion;
 
-pub use legion::filter::ChunksetFilterData;
-pub use legion::filter::Filter;
-pub use legion::prelude::*;
-pub use legion::systems::resource::Resource;
-pub use legion::world::IntoComponentSource;
-pub use legion::world::TagLayout;
-pub use legion::world::TagSet;
-
-pub mod prelude {
-    pub use crate::legion::prelude::*;
-}
+pub use crate::legion::query::IntoQuery;
+pub use crate::legion::query::Query;
+pub use crate::legion::query::Read;
+pub use crate::legion::query::Tagged;
+pub use crate::legion::query::TryRead;
+pub use crate::legion::query::TryWrite;
+pub use crate::legion::query::Write;
+pub use crate::legion::systems::schedule::Schedulable;
+pub use crate::legion::systems::schedule::Schedule;
+pub use crate::legion::systems::SystemBuilder;

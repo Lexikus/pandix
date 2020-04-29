@@ -11,4 +11,4 @@ math = { path = "../math" }
 graphic = { path = "../graphic" }
 common = { path = "../common" }
 context = { path = "../context" }
-ecs = { path = "../ecs" }
+legion = { git = "https://github.com/TomGillen/legion", rev="bd441f4811e7a9e877a0f479a674bbdbf4e4cda3" }

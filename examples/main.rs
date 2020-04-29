@@ -1,6 +1,6 @@
 extern crate pandix;
 
-use pandix::ecs::prelude::*;
+use pandix::ecs::*;
 use pandix::*;
 
 enum Scene {
