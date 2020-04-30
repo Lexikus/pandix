@@ -12,7 +12,7 @@ mod test {
     use super::*;
 
     #[test]
-    fn is_key_hold() {
+    fn input_is_key_hold() {
         let mut input = Input::new();
 
         input::update(
@@ -41,7 +41,7 @@ mod test {
     }
 
     #[test]
-    fn is_key_pressed() {
+    fn input_is_key_pressed() {
         let mut input = Input::new();
 
         input::update(
@@ -70,7 +70,7 @@ mod test {
     }
 
     #[test]
-    fn is_key_released() {
+    fn input_is_key_released() {
         let mut input = Input::new();
 
         input::update(
@@ -115,7 +115,7 @@ mod test {
     }
 
     #[test]
-    fn is_key_pressed_only_one_frame() {
+    fn input_is_key_pressed_only_one_frame() {
         let mut input = Input::new();
 
         // Key should not be pressed
@@ -142,7 +142,7 @@ mod test {
     }
 
     #[test]
-    fn is_key_released_only_one_frame() {
+    fn input_is_key_released_only_one_frame() {
         let mut input = Input::new();
 
         // Key should not be released

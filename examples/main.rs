@@ -39,7 +39,7 @@ fn main() {
         .write_resource::<resource::SceneState>()
         .build(|_, _, resource, _| {
             // input handling is not yet in the resources
-            resource.current_scene = 1;
+            // resource.current_scene = 1;
         });
     let door_system = Schedule::builder().add_system(door_schedulable).build();
 

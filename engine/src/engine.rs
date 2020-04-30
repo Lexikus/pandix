@@ -14,6 +14,7 @@ use legion::world::TagSet;
 use std::collections::HashMap;
 
 use context::canvas::Canvas;
+use context::Event;
 
 use crate::resource;
 use crate::scene::Scene;
@@ -81,16 +82,15 @@ impl Engine {
     }
 
     // TODO: return Error
-    pub fn run(&mut self) {
-        let mut canvas = Canvas::new("pandix engine", 400, 400).unwrap();
+    pub fn run(mut self) {
+        let (mut canvas, canvas_loop) = Canvas::new("pandix engine", 400, 400).unwrap();
 
         graphic::api::load_gpu_function_pointers(|proc_address| {
             canvas.get_graphic_specs(proc_address)
         });
 
-        let resource = &mut self.resources;
-        while !canvas.should_close() {
-            canvas.on_update_begin();
+        canvas_loop.run(move |event| {
+            let resource = &mut self.resources;
 
             graphic::api::clear();
             graphic::api::clear_color(0.0, 0.0, 1.0, 1.0);
@@ -113,7 +113,12 @@ impl Engine {
             // execute engine render system
             self.render_system.execute(scene.world_mut(), resource);
 
-            canvas.on_update_end();
-        }
+            match event {
+                Event::RedrawRequested(_) => {
+                    canvas.context().swap_buffers().unwrap();
+                }
+                _ => (),
+            }
+        });
     }
 }

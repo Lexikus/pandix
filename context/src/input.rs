@@ -12,7 +12,8 @@ pub fn update(input: &mut Input, key: Key, button: Button) {
 }
 
 pub fn clean_up(input: &mut Input) {
-    input.current
+    input
+        .current
         .iter_mut()
         .zip(input.before.iter_mut())
         .filter(|(current, _)| {

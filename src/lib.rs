@@ -8,6 +8,6 @@ pub use engine::Engine;
 
 pub mod keyboard {
     pub use super::context::keyboard::Action;
-    pub use super::context::keyboard::Modifier;
     pub use super::context::keyboard::Key;
+    pub use super::context::keyboard::Modifier;
 }

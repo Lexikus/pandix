@@ -1,30 +1,17 @@
 #![allow(dead_code)]
 
-extern crate glfw;
+extern crate glutin;
 
-const OPENGL_MAJOR_VERSION: u32 = 4;
-const OPENGL_MINOR_VERSION: u32 = 0;
-
-use super::input;
-use super::input::Input;
-use super::keyboard::Button;
-
-use std::sync::mpsc::Receiver;
-
-use glfw::Context;
-use glfw::FlushedMessages;
-use glfw::Glfw;
-use glfw::OpenGlProfileHint;
-use glfw::SwapInterval;
-use glfw::Window;
-use glfw::WindowEvent;
-use glfw::WindowHint;
-use glfw::WindowMode;
-use glfw::FAIL_ON_ERRORS;
+use glutin::event::Event;
+use glutin::event::WindowEvent;
+use glutin::event_loop::ControlFlow;
+use glutin::event_loop::EventLoop;
+use glutin::window::Window;
+use glutin::window::WindowBuilder;
+use glutin::{ContextWrapper, ContextBuilder, PossiblyCurrent};
 
 #[derive(Debug)]
 pub enum CanvasError {
-    CanvasInitFailed,
     CreatingWindowFailed,
 }
 
@@ -32,40 +19,25 @@ pub struct Canvas {
     title: String,
     width: u32,
     height: u32,
-    window: Window,
-    glfw: Glfw,
-    events: Receiver<(f64, WindowEvent)>,
+    context: ContextWrapper<PossiblyCurrent, Window>
 }
 
 impl Canvas {
-    pub fn new(title: &str, width: u32, height: u32) -> Result<Canvas, CanvasError> {
-        let mut glfw = glfw::init(FAIL_ON_ERRORS).map_err(|_| CanvasError::CanvasInitFailed)?;
+    pub fn new(title: &str, width: u32, height: u32) -> Result<(Canvas, CanvasLoop), CanvasError> {
+        let event_loop = EventLoop::new();
+        let window = WindowBuilder::new();
+        let context = ContextBuilder::new().build_windowed(window, &event_loop).unwrap();
+        let context = unsafe { context.make_current().unwrap() };
 
-        glfw.window_hint(WindowHint::ContextVersion(
-            OPENGL_MAJOR_VERSION,
-            OPENGL_MINOR_VERSION,
-        ));
-
-        glfw.window_hint(WindowHint::OpenGlProfile(OpenGlProfileHint::Core));
-
-        glfw.window_hint(WindowHint::OpenGlForwardCompat(true));
-
-        let (mut window, receiver) = glfw
-            .create_window(width, height, title, WindowMode::Windowed)
-            .ok_or(CanvasError::CreatingWindowFailed)?;
-
-        glfw.make_context_current(Some(&window));
-
-        window.set_key_polling(true);
-
-        Ok(Canvas {
-            title: title.to_owned(),
-            width,
-            height,
-            window,
-            glfw,
-            events: receiver,
-        })
+        Ok((
+            Canvas {
+                title: title.to_owned(),
+                width,
+                height,
+                context,
+            },
+            CanvasLoop(event_loop),
+        ))
     }
 
     pub fn title(&self) -> &str {
@@ -80,53 +52,36 @@ impl Canvas {
         self.height
     }
 
+    pub fn context(&self) -> &ContextWrapper<PossiblyCurrent, Window> {
+        &self.context
+    }
+
     pub fn get_graphic_specs(&mut self, proc_address: &'static str) -> *const std::ffi::c_void {
-        self.window.get_proc_address(proc_address)
+        self.context.get_proc_address(proc_address)
     }
+}
 
-    pub fn should_close(&self) -> bool {
-        self.window.should_close()
-    }
+pub struct CanvasLoop(EventLoop<()>);
 
-    pub fn set_vsync(&mut self, enable: bool) {
-        if enable {
-            self.glfw.set_swap_interval(SwapInterval::Adaptive);
-        } else {
-            self.glfw.set_swap_interval(SwapInterval::None);
-        }
-    }
+impl CanvasLoop {
+    pub fn run<F>(self, mut function: F)
+    where
+        F: 'static + FnMut(Event<'_, ()>),
+    {
+        self.0.run(move |event, _, control_flow| {
+            *control_flow = ControlFlow::Wait;
 
-    pub fn on_update_begin(&mut self) {
-        self.glfw.poll_events();
-    }
-
-    pub fn on_update_end(&mut self) {
-        self.window.swap_buffers();
-    }
-
-    pub fn terminate() {
-        glfw::terminate();
-    }
-
-    pub fn process_events(&self, input: &mut Input) {
-        for (_, message) in self.poll_events() {
-            match message {
-                WindowEvent::Key(key, _, action, modifiers) => {
-                    let action = action.into();
-                    let key = key.into();
-                    let modifier = modifiers.into();
-
-                    input::update(input, key, Button::new(key, action, modifier))
-                }
-                WindowEvent::Size(x, y) => {
-                    println!("{} {}", x, y);
+            match event {
+                Event::WindowEvent {
+                    event: WindowEvent::CloseRequested,
+                    ..
+                } => {
+                    *control_flow = ControlFlow::Exit;
                 }
                 _ => (),
-            };
-        }
-    }
+            }
 
-    fn poll_events(&self) -> FlushedMessages<'_, (f64, WindowEvent)> {
-        glfw::flush_messages(&self.events)
+            function(event);
+        });
     }
 }
