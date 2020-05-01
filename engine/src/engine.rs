@@ -5,16 +5,23 @@ extern crate math;
 
 use legion::filter::ChunksetFilterData;
 use legion::filter::Filter;
-use legion::prelude::*;
 use legion::systems::resource::Resource;
 use legion::world::IntoComponentSource;
 use legion::world::TagLayout;
 use legion::world::TagSet;
+use legion::world::Universe;
+use legion::systems::schedule::Schedule;
+use legion::systems::resource::Resources;
 
 use std::collections::HashMap;
 
 use context::canvas::Canvas;
 use context::Event;
+use context::keyboard::Key;
+use context::keyboard::Action;
+use context::keyboard::Modifier;
+use context::keyboard::Button;
+use context::input;
 
 use crate::resource;
 use crate::scene::Scene;
@@ -32,6 +39,7 @@ impl Engine {
     pub fn new() -> Self {
         let mut resources = Resources::default();
         resources.insert(resource::SceneState::new());
+        resources.insert(resource::InputState::new());
 
         Engine {
             universe: Universe::new(),
@@ -85,12 +93,59 @@ impl Engine {
     pub fn run(mut self) {
         let (mut canvas, canvas_loop) = Canvas::new("pandix engine", 400, 400).unwrap();
 
-        graphic::api::load_gpu_function_pointers(|proc_address| {
-            canvas.get_graphic_specs(proc_address)
+        graphic::api::load_graphic_functions_from_context(|proc_address| {
+            canvas.get_context_proc_address(proc_address)
         });
 
-        canvas_loop.run(move |event| {
+        canvas_loop.run(&canvas, move |events| {
             let resource = &mut self.resources;
+
+            for event in events {
+                match event {
+                    Event::KeyDown {
+                        keycode,
+                        keymod,
+                        repeat,
+                        ..
+                    } => {
+                        let mut input = resource
+                            .get_mut::<resource::InputState>()
+                            .unwrap();
+
+                        let key: Key = if keycode.is_some() {
+                            keycode.unwrap().into()
+                        } else{
+                            Key::Unknown
+                        };
+                        let action = if repeat { Action::Repeat } else { Action::Press };
+                        let modifier: Modifier = keymod.into();
+                        let button = Button::new(key, action, modifier);
+
+                        input::update(&mut input, key, button);
+                    },
+                    context::Event::KeyUp {
+                        keycode,
+                        keymod,
+                        ..
+                    } => {
+                        let mut input = resource
+                            .get_mut::<resource::InputState>()
+                            .unwrap();
+
+                        let key: Key = if keycode.is_some() {
+                            keycode.unwrap().into()
+                        } else{
+                            Key::Unknown
+                        };
+                        let action = Action::Release;
+                        let modifier: Modifier = keymod.into();
+                        let button = Button::new(key, action, modifier);
+
+                        input::update(&mut input, key, button);
+                    }
+                    _ => ()
+                }
+            }
 
             graphic::api::clear();
             graphic::api::clear_color(0.0, 0.0, 1.0, 1.0);
@@ -113,12 +168,11 @@ impl Engine {
             // execute engine render system
             self.render_system.execute(scene.world_mut(), resource);
 
-            match event {
-                Event::RedrawRequested(_) => {
-                    canvas.context().swap_buffers().unwrap();
-                }
-                _ => (),
-            }
+             let mut input = resource
+                .get_mut::<resource::InputState>()
+                .unwrap();
+
+            input::clean_up(&mut input);
         });
     }
 }

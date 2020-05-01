@@ -26,24 +26,17 @@ fn main() {
         vec![(Test(4),), (Test(5),), (Test(6),)],
     );
 
-    let log_test_schedulable = SystemBuilder::new("LogTest")
-        .with_query(<Read<Test>>::query())
-        .build(|_, world, _, queries| {
-            queries
-                .iter_entities(world)
-                .for_each(|(_, value)| println!("{:?}", value.0))
+    let key_system_test_scheduleable = SystemBuilder::new("door")
+        .read_resource::<resource::InputState>()
+        .build(|_, _, input_handler, _| {
+            if input_handler.is_key_pressed(keyboard::Key::K) {
+                println!("k pressed");
+            }
         });
-    let log_test_system = Schedule::builder().add_system(log_test_schedulable).build();
+    let key_system_test = Schedule::builder()
+        .add_system(key_system_test_scheduleable)
+        .build();
 
-    let door_schedulable = SystemBuilder::new("door")
-        .write_resource::<resource::SceneState>()
-        .build(|_, _, resource, _| {
-            // input handling is not yet in the resources
-            // resource.current_scene = 1;
-        });
-    let door_system = Schedule::builder().add_system(door_schedulable).build();
-
-    engine.add_system(log_test_system);
-    engine.add_system(door_system);
+    engine.add_system(key_system_test);
     engine.run();
 }

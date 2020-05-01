@@ -26,9 +26,7 @@ pub fn clear_color(r: f32, g: f32, b: f32, a: f32) {
     }
 }
 
-// TODO(alex):
-// this can fail. we should error handle this somehow.
-pub fn load_gpu_function_pointers<F: FnMut(&'static str) -> *const std::ffi::c_void>(
+pub fn load_graphic_functions_from_context<F: FnMut(&'static str) -> *const std::ffi::c_void>(
     mut loadfn: F,
 ) {
     gl::load_with(|s| loadfn(s));
