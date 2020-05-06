@@ -98,7 +98,7 @@ impl Engine {
         });
 
         canvas_loop.run(&canvas, move |events| {
-            let resource = &mut self.resources;
+            let resources = &mut self.resources;
 
             for event in events {
                 match event {
@@ -108,7 +108,7 @@ impl Engine {
                         repeat,
                         ..
                     } => {
-                        let mut input = resource
+                        let mut input = resources
                             .get_mut::<resource::InputState>()
                             .unwrap();
 
@@ -128,7 +128,7 @@ impl Engine {
                         keymod,
                         ..
                     } => {
-                        let mut input = resource
+                        let mut input = resources
                             .get_mut::<resource::InputState>()
                             .unwrap();
 
@@ -150,7 +150,7 @@ impl Engine {
             graphic::api::clear();
             graphic::api::clear_color(0.0, 0.0, 1.0, 1.0);
 
-            let current_scene = resource
+            let current_scene = resources
                 .get::<resource::SceneState>()
                 .unwrap()
                 .current_scene;
@@ -160,15 +160,15 @@ impl Engine {
             // execute global systems
             self.systems
                 .iter_mut()
-                .for_each(|schedule| schedule.execute(scene.world_mut(), resource));
+                .for_each(|schedule| schedule.execute(scene.world_mut(), resources));
 
             // execute scene systems
-            scene.execute_systems(resource);
+            scene.execute_systems(resources);
 
             // execute engine render system
-            self.render_system.execute(scene.world_mut(), resource);
+            self.render_system.execute(scene.world_mut(), resources);
 
-             let mut input = resource
+             let mut input = resources
                 .get_mut::<resource::InputState>()
                 .unwrap();
 
