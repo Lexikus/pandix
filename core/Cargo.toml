@@ -1,5 +1,5 @@
 [package]
-name = "engine"
+name = "core"
 version = "0.0.1"
 authors = ["Alexander <alexander.bifulco@gmail.com>"]
 edition = "2018"

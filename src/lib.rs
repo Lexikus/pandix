@@ -1,10 +1,10 @@
+extern crate core;
 extern crate context;
 pub extern crate ecs;
-extern crate engine;
 pub extern crate math;
 
-pub use engine::resource;
-pub use engine::Engine;
+pub use core::resource;
+pub use core::Engine;
 
 pub mod keyboard {
     pub use super::context::keyboard::Action;

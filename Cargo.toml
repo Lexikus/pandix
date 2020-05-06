@@ -6,20 +6,18 @@ edition = "2018"
 
 [workspace]
 members = [
+    "core",
     "math",
     "graphic",
     "common",
     "context",
-    "engine",
-    "ecs",
-    "playground"
+    "ecs"
 ]
 
 [dependencies]
-engine = { path = "engine" }
+core = { path = "core" }
 ecs = { path = "ecs" }
 math = { path = "math" }
 graphic = { path = "graphic" }
 common = { path = "common" }
 context = { path = "context" }
-playground = { path = "playground" }
