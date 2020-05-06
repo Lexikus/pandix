@@ -1,6 +1,7 @@
 extern crate context;
 
-mod scene_state;
+mod scene_management;
 
-pub use context::input::Input as InputState;
-pub use scene_state::SceneState;
+pub use context::input::Input;
+pub use scene_management::SceneManagement;
+pub use crate::tick::Tick;

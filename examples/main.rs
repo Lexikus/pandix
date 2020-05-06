@@ -27,10 +27,11 @@ fn main() {
     );
 
     let key_system_test_scheduleable = SystemBuilder::new("door")
-        .read_resource::<resource::InputState>()
-        .build(|_, _, input_handler, _| {
-            if input_handler.is_key_pressed(keyboard::Key::K) {
-                println!("k pressed");
+        .read_resource::<resource::Input>()
+        .read_resource::<resource::Tick>()
+        .build(|_, _, (input, tick), _| {
+            if input.is_key_pressed(keyboard::Key::K) {
+                println!("{}", tick.delta_time() as f64);
             }
         });
     let key_system_test = Schedule::builder()

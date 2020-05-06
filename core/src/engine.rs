@@ -26,6 +26,7 @@ use context::input;
 use crate::resource;
 use crate::scene::Scene;
 use crate::system;
+use crate::tick;
 
 pub struct Engine {
     universe: Universe,
@@ -38,8 +39,9 @@ pub struct Engine {
 impl Engine {
     pub fn new() -> Self {
         let mut resources = Resources::default();
-        resources.insert(resource::SceneState::new());
-        resources.insert(resource::InputState::new());
+        resources.insert(resource::SceneManagement::new());
+        resources.insert(resource::Input::new());
+        resources.insert(resource::Tick::new());
 
         Engine {
             universe: Universe::new(),
@@ -56,9 +58,10 @@ impl Engine {
 
         self.scenes.insert(key as i16, scene);
 
-        let scene_state = &mut self.resources.get_mut::<resource::SceneState>().unwrap();
-        if scene_state.current_scene == -1 {
-            scene_state.current_scene = 0;
+        if let Some(ref mut scene_management) = self.resources.get_mut::<resource::SceneManagement>() {
+            if scene_management.current_scene == -1 {
+                scene_management.current_scene = 0;
+            }
         }
     }
 
@@ -107,11 +110,7 @@ impl Engine {
                         keymod,
                         repeat,
                         ..
-                    } => {
-                        let mut input = resources
-                            .get_mut::<resource::InputState>()
-                            .unwrap();
-
+                    } => if let Some(ref mut input) =  resources.get_mut::<resource::Input>() {
                         let key: Key = if keycode.is_some() {
                             keycode.unwrap().into()
                         } else{
@@ -121,17 +120,14 @@ impl Engine {
                         let modifier: Modifier = keymod.into();
                         let button = Button::new(key, action, modifier);
 
-                        input::update(&mut input, key, button);
-                    },
+                        input::update(input, key, button);
+                    }
+                    ,
                     context::Event::KeyUp {
                         keycode,
                         keymod,
                         ..
-                    } => {
-                        let mut input = resources
-                            .get_mut::<resource::InputState>()
-                            .unwrap();
-
+                    } => if let Some(ref mut input) =  resources.get_mut::<resource::Input>() {
                         let key: Key = if keycode.is_some() {
                             keycode.unwrap().into()
                         } else{
@@ -141,17 +137,21 @@ impl Engine {
                         let modifier: Modifier = keymod.into();
                         let button = Button::new(key, action, modifier);
 
-                        input::update(&mut input, key, button);
+                        input::update(input, key, button);
                     }
                     _ => ()
                 }
+            }
+
+            if let Some(tick) = &mut resources.get_mut::<resource::Tick>() {
+                tick::update(tick);
             }
 
             graphic::api::clear();
             graphic::api::clear_color(0.0, 0.0, 1.0, 1.0);
 
             let current_scene = resources
-                .get::<resource::SceneState>()
+                .get::<resource::SceneManagement>()
                 .unwrap()
                 .current_scene;
             // TODO: remove unwrap
@@ -169,7 +169,7 @@ impl Engine {
             self.render_system.execute(scene.world_mut(), resources);
 
              let mut input = resources
-                .get_mut::<resource::InputState>()
+                .get_mut::<resource::Input>()
                 .unwrap();
 
             input::clean_up(&mut input);

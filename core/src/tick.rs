@@ -8,6 +8,17 @@ pub struct Tick {
     delta_time: f32,
 }
 
+pub fn update(tick: &mut Tick) {
+    let time = SystemTime::now();
+
+    tick.delta_time = match time.duration_since(tick.previous_time) {
+        Ok(time) => (time.as_millis() as f64 / 1000.0) as f32,
+        Err(_) => 0.0,
+    };
+
+    tick.previous_time = SystemTime::now();
+}
+
 impl Tick {
     pub fn new() -> Tick {
         Tick {
@@ -15,17 +26,6 @@ impl Tick {
             previous_time: SystemTime::now(),
             delta_time: 0.0,
         }
-    }
-
-    pub fn on_update(&mut self) {
-        let time = SystemTime::now();
-
-        self.delta_time = match time.duration_since(self.previous_time) {
-            Ok(time) => time.as_millis() as f32 / 1000.0,
-            Err(_) => 0.0,
-        };
-
-        self.previous_time = SystemTime::now();
     }
 
     pub fn delta_time(&self) -> f32 {

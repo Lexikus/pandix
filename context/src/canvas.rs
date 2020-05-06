@@ -7,8 +7,10 @@ use sdl2::video::GLContext;
 use sdl2::video::GLProfile;
 use sdl2::video::Window;
 use sdl2::EventPump;
+use sdl2::EventSubsystem;
 use sdl2::Sdl;
 use sdl2::VideoSubsystem;
+use sdl2::video::SwapInterval;
 
 const OPENGL_MAJOR_VERSION: u8 = 4;
 const OPENGL_MINOR_VERSION: u8 = 0;
@@ -52,7 +54,14 @@ impl Canvas {
         let event_pump = sdl
             .event_pump()
             .map_err(|_| CanvasError::CreatingEventHandlerFailed)?;
-        let cavas_loop = CanvasLoop(event_pump);
+        let event_subsystem = sdl
+            .event()
+            .map_err(|_| CanvasError::CreatingEventHandlerFailed)?;
+        let cavas_loop = CanvasLoop(event_pump, event_subsystem);
+
+        if let Err(_error) = subsystem.gl_set_swap_interval(SwapInterval::LateSwapTearing) {
+            // TODO: if changing to vsync is not supported what to do?
+        }
 
         Ok((
             Canvas {
@@ -100,7 +109,7 @@ impl Canvas {
     }
 }
 
-pub struct CanvasLoop(EventPump);
+pub struct CanvasLoop(EventPump, EventSubsystem);
 
 impl CanvasLoop {
     pub fn run<F>(mut self, canvas: &Canvas, mut function: F)

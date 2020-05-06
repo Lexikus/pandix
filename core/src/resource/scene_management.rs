@@ -1,15 +1,15 @@
 #[derive(Debug)]
-pub struct SceneState {
+pub struct SceneManagement {
     pub current_scene: i16,
 }
 
-impl SceneState {
+impl SceneManagement {
     pub fn new() -> Self {
         Self { current_scene: -1 }
     }
 }
 
-impl Default for SceneState {
+impl Default for SceneManagement {
     fn default() -> Self {
         Self::new()
     }
