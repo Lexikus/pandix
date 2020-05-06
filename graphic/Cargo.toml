@@ -8,5 +8,5 @@ edition = "2018"
 
 [dependencies]
 gl = "0.14.0"
-cgmath = "0.17.0"
-image = "0.22.2"
+image = "0.23.4"
+math = { path = "../math" }

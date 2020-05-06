@@ -5,12 +5,12 @@ extern crate sdl2;
 use sdl2::event::Event;
 use sdl2::video::GLContext;
 use sdl2::video::GLProfile;
+use sdl2::video::SwapInterval;
 use sdl2::video::Window;
 use sdl2::EventPump;
 use sdl2::EventSubsystem;
 use sdl2::Sdl;
 use sdl2::VideoSubsystem;
-use sdl2::video::SwapInterval;
 
 const OPENGL_MAJOR_VERSION: u8 = 4;
 const OPENGL_MINOR_VERSION: u8 = 0;

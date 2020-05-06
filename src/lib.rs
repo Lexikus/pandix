@@ -1,5 +1,5 @@
-extern crate core;
 extern crate context;
+extern crate core;
 pub extern crate ecs;
 pub extern crate math;
 

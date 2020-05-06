@@ -1,33 +1,33 @@
-#![allow(dead_code)]
-extern crate gl;
+// #![allow(dead_code)]
+// extern crate gl;
 
-pub struct VertexArray {
-    id: u32,
-}
+// pub struct VertexArray {
+//     id: u32,
+// }
 
-impl VertexArray {
-    pub fn new() -> VertexArray {
-        let mut id: u32 = 0;
-        unsafe { gl::GenVertexArrays(1, &mut id) };
+// impl VertexArray {
+//     pub fn new() -> VertexArray {
+//         let mut id: u32 = 0;
+//         unsafe { gl::GenVertexArrays(1, &mut id) };
 
-        VertexArray { id }
-    }
+//         VertexArray { id }
+//     }
 
-    pub fn bind(&self) {
-        unsafe {
-            gl::BindVertexArray(self.id);
-        };
-    }
+//     pub fn bind(&self) {
+//         unsafe {
+//             gl::BindVertexArray(self.id);
+//         };
+//     }
 
-    pub fn unbind(&self) {
-        unsafe {
-            gl::BindVertexArray(0);
-        };
-    }
-}
+//     pub fn unbind(&self) {
+//         unsafe {
+//             gl::BindVertexArray(0);
+//         };
+//     }
+// }
 
-impl Default for VertexArray {
-    fn default() -> Self {
-        Self::new()
-    }
-}
+// impl Default for VertexArray {
+//     fn default() -> Self {
+//         Self::new()
+//     }
+// }

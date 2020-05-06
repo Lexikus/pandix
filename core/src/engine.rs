@@ -3,25 +3,25 @@ extern crate graphic;
 extern crate legion;
 extern crate math;
 
+use std::collections::HashMap;
+
 use legion::filter::ChunksetFilterData;
 use legion::filter::Filter;
 use legion::systems::resource::Resource;
+use legion::systems::resource::Resources;
+use legion::systems::schedule::Schedule;
 use legion::world::IntoComponentSource;
 use legion::world::TagLayout;
 use legion::world::TagSet;
 use legion::world::Universe;
-use legion::systems::schedule::Schedule;
-use legion::systems::resource::Resources;
-
-use std::collections::HashMap;
 
 use context::canvas::Canvas;
-use context::Event;
-use context::keyboard::Key;
-use context::keyboard::Action;
-use context::keyboard::Modifier;
-use context::keyboard::Button;
 use context::input;
+use context::keyboard::Action;
+use context::keyboard::Button;
+use context::keyboard::Key;
+use context::keyboard::Modifier;
+use context::Event;
 
 use crate::resource;
 use crate::scene::Scene;
@@ -58,7 +58,9 @@ impl Engine {
 
         self.scenes.insert(key as i16, scene);
 
-        if let Some(ref mut scene_management) = self.resources.get_mut::<resource::SceneManagement>() {
+        if let Some(ref mut scene_management) =
+            self.resources.get_mut::<resource::SceneManagement>()
+        {
             if scene_management.current_scene == -1 {
                 scene_management.current_scene = 0;
             }
@@ -110,36 +112,41 @@ impl Engine {
                         keymod,
                         repeat,
                         ..
-                    } => if let Some(ref mut input) =  resources.get_mut::<resource::Input>() {
-                        let key: Key = if keycode.is_some() {
-                            keycode.unwrap().into()
-                        } else{
-                            Key::Unknown
-                        };
-                        let action = if repeat { Action::Repeat } else { Action::Press };
-                        let modifier: Modifier = keymod.into();
-                        let button = Button::new(key, action, modifier);
+                    } => {
+                        if let Some(ref mut input) = resources.get_mut::<resource::Input>() {
+                            let key: Key = if keycode.is_some() {
+                                keycode.unwrap().into()
+                            } else {
+                                Key::Unknown
+                            };
+                            let action = if repeat {
+                                Action::Repeat
+                            } else {
+                                Action::Press
+                            };
+                            let modifier: Modifier = keymod.into();
+                            let button = Button::new(key, action, modifier);
 
-                        input::update(input, key, button);
+                            input::update(input, key, button);
+                        }
                     }
-                    ,
                     context::Event::KeyUp {
-                        keycode,
-                        keymod,
-                        ..
-                    } => if let Some(ref mut input) =  resources.get_mut::<resource::Input>() {
-                        let key: Key = if keycode.is_some() {
-                            keycode.unwrap().into()
-                        } else{
-                            Key::Unknown
-                        };
-                        let action = Action::Release;
-                        let modifier: Modifier = keymod.into();
-                        let button = Button::new(key, action, modifier);
+                        keycode, keymod, ..
+                    } => {
+                        if let Some(ref mut input) = resources.get_mut::<resource::Input>() {
+                            let key: Key = if keycode.is_some() {
+                                keycode.unwrap().into()
+                            } else {
+                                Key::Unknown
+                            };
+                            let action = Action::Release;
+                            let modifier: Modifier = keymod.into();
+                            let button = Button::new(key, action, modifier);
 
-                        input::update(input, key, button);
+                            input::update(input, key, button);
+                        }
                     }
-                    _ => ()
+                    _ => (),
                 }
             }
 
@@ -147,7 +154,6 @@ impl Engine {
                 tick::update(tick);
             }
 
-            graphic::api::clear();
             graphic::api::clear_color(0.0, 0.0, 1.0, 1.0);
 
             let current_scene = resources
@@ -168,9 +174,7 @@ impl Engine {
             // execute engine render system
             self.render_system.execute(scene.world_mut(), resources);
 
-             let mut input = resources
-                .get_mut::<resource::Input>()
-                .unwrap();
+            let mut input = resources.get_mut::<resource::Input>().unwrap();
 
             input::clean_up(&mut input);
         });

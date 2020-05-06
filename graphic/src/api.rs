@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 extern crate gl;
 
 pub fn enable_depth_test() {
@@ -22,6 +20,7 @@ pub fn clear() {
 
 pub fn clear_color(r: f32, g: f32, b: f32, a: f32) {
     unsafe {
+        gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
         gl::ClearColor(r, g, b, a);
     }
 }
