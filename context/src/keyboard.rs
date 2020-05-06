@@ -4,7 +4,7 @@ use sdl2::keyboard::Keycode;
 use sdl2::keyboard::Mod;
 use std::convert::From;
 
-pub const KEYS_COUNT: usize = 118;
+pub const KEYS_COUNT: usize = 123;
 
 #[derive(Copy, Clone, PartialEq, Eq, Hash, Debug)]
 pub enum Key {
@@ -14,6 +14,8 @@ pub enum Key {
     Minus,
     Period,
     Slash,
+    Dollar,
+    Less,
     Num0,
     Num1,
     Num2,
@@ -56,8 +58,6 @@ pub enum Key {
     Backslash,
     RightBracket,
     GraveAccent,
-    World1,
-    World2,
     Escape,
     Enter,
     Tab,
@@ -101,7 +101,6 @@ pub enum Key {
     F22,
     F23,
     F24,
-    F25,
     Kp0,
     Kp1,
     Kp2,
@@ -113,10 +112,13 @@ pub enum Key {
     Kp8,
     Kp9,
     KpDecimal,
+    KpPeriod,
     KpDivide,
     KpMultiply,
     KpSubtract,
     KpAdd,
+    KpPlus,
+    KpMinus,
     KpEnter,
     KpEquals,
     LeftShift,
@@ -140,6 +142,8 @@ impl From<Keycode> for Key {
             Keycode::Minus => Key::Minus,
             Keycode::Period => Key::Period,
             Keycode::Slash => Key::Slash,
+            Keycode::Dollar => Key::Dollar,
+            Keycode::Less => Key::Less,
             Keycode::Num0 => Key::Num0,
             Keycode::Num1 => Key::Num1,
             Keycode::Num2 => Key::Num2,
@@ -236,10 +240,13 @@ impl From<Keycode> for Key {
             Keycode::Kp8 => Key::Kp8,
             Keycode::Kp9 => Key::Kp9,
             Keycode::KpDecimal => Key::KpDecimal,
+            Keycode::KpPeriod => Key::KpPeriod,
             Keycode::KpDivide => Key::KpDivide,
             Keycode::KpMultiply => Key::KpMultiply,
             Keycode::KpMemSubtract => Key::KpSubtract,
             Keycode::KpMemAdd => Key::KpAdd,
+            Keycode::KpPlus => Key::KpPlus,
+            Keycode::KpMinus => Key::KpMinus,
             Keycode::KpEnter => Key::KpEnter,
             Keycode::KpEquals => Key::KpEquals,
             Keycode::LShift => Key::LeftShift,
@@ -250,6 +257,7 @@ impl From<Keycode> for Key {
             Keycode::RCtrl => Key::RightControl,
             Keycode::RAlt => Key::RightAlt,
             Keycode::RGui => Key::RightSuper,
+            Keycode::Menu => Key::Menu,
             missed => {
                 println!("missed key: {:?}", missed);
                 Key::Unknown
@@ -344,6 +352,8 @@ pub fn keys_collection() -> [Button; KEYS_COUNT] {
         Button::new(Key::Minus, Action::Release, Modifier::Unknown),
         Button::new(Key::Period, Action::Release, Modifier::Unknown),
         Button::new(Key::Slash, Action::Release, Modifier::Unknown),
+        Button::new(Key::Dollar, Action::Release, Modifier::Unknown),
+        Button::new(Key::Less, Action::Release, Modifier::Unknown),
         Button::new(Key::Num0, Action::Release, Modifier::Unknown),
         Button::new(Key::Num1, Action::Release, Modifier::Unknown),
         Button::new(Key::Num2, Action::Release, Modifier::Unknown),
@@ -401,7 +411,6 @@ pub fn keys_collection() -> [Button; KEYS_COUNT] {
         Button::new(Key::Home, Action::Release, Modifier::Unknown),
         Button::new(Key::End, Action::Release, Modifier::Unknown),
         Button::new(Key::CapsLock, Action::Release, Modifier::Unknown),
-        Button::new(Key::CapsLock, Action::Release, Modifier::Unknown),
         Button::new(Key::ScrollLock, Action::Release, Modifier::Unknown),
         Button::new(Key::NumLock, Action::Release, Modifier::Unknown),
         Button::new(Key::PrintScreen, Action::Release, Modifier::Unknown),
@@ -441,10 +450,13 @@ pub fn keys_collection() -> [Button; KEYS_COUNT] {
         Button::new(Key::Kp8, Action::Release, Modifier::Unknown),
         Button::new(Key::Kp9, Action::Release, Modifier::Unknown),
         Button::new(Key::KpDecimal, Action::Release, Modifier::Unknown),
+        Button::new(Key::KpPeriod, Action::Release, Modifier::Unknown),
         Button::new(Key::KpDivide, Action::Release, Modifier::Unknown),
         Button::new(Key::KpMultiply, Action::Release, Modifier::Unknown),
         Button::new(Key::KpSubtract, Action::Release, Modifier::Unknown),
         Button::new(Key::KpAdd, Action::Release, Modifier::Unknown),
+        Button::new(Key::KpPlus, Action::Release, Modifier::Unknown),
+        Button::new(Key::KpMinus, Action::Release, Modifier::Unknown),
         Button::new(Key::KpEnter, Action::Release, Modifier::Unknown),
         Button::new(Key::KpEquals, Action::Release, Modifier::Unknown),
         Button::new(Key::LeftShift, Action::Release, Modifier::Unknown),
@@ -455,6 +467,7 @@ pub fn keys_collection() -> [Button; KEYS_COUNT] {
         Button::new(Key::RightControl, Action::Release, Modifier::Unknown),
         Button::new(Key::RightAlt, Action::Release, Modifier::Unknown),
         Button::new(Key::RightSuper, Action::Release, Modifier::Unknown),
+        Button::new(Key::Menu, Action::Release, Modifier::Unknown),
         Button::new(Key::Unknown, Action::Release, Modifier::Unknown),
     ]
 }

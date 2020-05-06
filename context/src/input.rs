@@ -6,7 +6,6 @@ use super::keyboard::Button;
 use super::keyboard::Key;
 
 pub fn update(input: &mut Input, key: Key, button: Button) {
-    // FIXME: some input are missing and will panic the application
     let current = input.current[key as usize].clone();
     input.before[key as usize] = current;
     input.current[key as usize] = button;
