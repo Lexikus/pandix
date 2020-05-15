@@ -3,6 +3,7 @@ extern crate core;
 pub extern crate ecs;
 pub extern crate math;
 
+pub use core::component;
 pub use core::resource;
 pub use core::Engine;
 

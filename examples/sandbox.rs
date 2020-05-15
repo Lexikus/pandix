@@ -18,6 +18,18 @@ fn main() {
     let mut engine = Engine::new();
     engine.create_scene(Scene::Main as u8);
     engine.create_scene(Scene::Test as u8);
+
+    engine.add_sprite("whatever", "whatever");
+    engine.add_sprite("whatever2", "whatever2");
+
+    engine.add_entities(
+        Scene::Main as u8,
+        (Static,),
+        vec![
+            (Test(0), component::Sprite::new("whatever")),
+            (Test(2), component::Sprite::new("whatever2")),
+        ],
+    );
     engine.add_entities(Scene::Main as u8, (Static,), vec![(Test(1),), (Test(2),)]);
     engine.add_entities(Scene::Main as u8, (Static,), vec![(Test(3),)]);
     engine.add_entities(
@@ -34,6 +46,7 @@ fn main() {
                 println!("{}", tick.delta_time() as f64);
             }
         });
+
     let key_system_test = Schedule::builder()
         .add_system(key_system_test_scheduleable)
         .build();

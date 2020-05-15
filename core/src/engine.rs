@@ -24,8 +24,12 @@ use context::keyboard::Key;
 use context::keyboard::Modifier;
 use context::Event;
 
+use graphic::texture::Texture;
+
 use crate::scene::Scene;
 use crate::scene_management::SceneManagement;
+use crate::sprite_management::SpriteManagement;
+use crate::sprite_management::Sprite;
 use crate::system;
 use crate::tick;
 use crate::tick::Tick;
@@ -42,6 +46,7 @@ impl Engine {
     pub fn new() -> Self {
         let mut resources = Resources::default();
         resources.insert(SceneManagement::new());
+        resources.insert(SpriteManagement::new());
         resources.insert(Input::new());
         resources.insert(Tick::new());
 
@@ -94,6 +99,12 @@ impl Engine {
         self.resources.insert(resource);
     }
 
+    pub fn add_sprite(&mut self, name: &str, path: &str) {
+        if let Some(ref mut sprite_management) = self.resources.get_mut::<SpriteManagement>() {
+            sprite_management.add(name, path);
+        }
+    }
+
     // TODO: return Error
     pub fn run(mut self) {
         let (mut canvas, canvas_loop) = Canvas::new("pandix engine", 400, 400).unwrap();
@@ -101,6 +112,19 @@ impl Engine {
         graphic::api::load_graphic_functions_from_context(|proc_address| {
             canvas.get_context_proc_address(proc_address)
         });
+
+        if let Some(ref mut sprite_manager) = self.resources.get_mut::<SpriteManagement>() {
+            for (_, value) in sprite_manager.sprites_mut() {
+                match value {
+                    Sprite::Image(texture) => {
+
+                    },
+                    _ => {
+                        // TODO: use purple 1x1 pixel
+                    }
+                }
+            }
+        }
 
         canvas_loop.run(&canvas, move |events| {
             let resources = &mut self.resources;

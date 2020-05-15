@@ -1,6 +1,7 @@
-extern crate Math;
+extern crate math;
 
-use Math::Vec3;
+use math::Vec2;
+use math::Vec3;
 
 pub struct Transform {
     position: Vec3,
