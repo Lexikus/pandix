@@ -1,16 +1,20 @@
 #[derive(Debug)]
 pub struct SceneManagement {
-    pub current_scene: i16,
+    current_scene: i16,
 }
 
 impl SceneManagement {
-    pub fn new() -> Self {
+    pub(crate) fn new() -> Self {
         Self { current_scene: -1 }
     }
 }
 
-impl Default for SceneManagement {
-    fn default() -> Self {
-        Self::new()
+impl SceneManagement {
+    pub fn change(&mut self, scene: u8) {
+        self.current_scene = scene as i16;
+    }
+
+    pub fn current(&self) -> i16 {
+        self.current_scene
     }
 }

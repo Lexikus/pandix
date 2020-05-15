@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 use std::time::SystemTime;
 
 pub struct Tick {
@@ -8,7 +6,7 @@ pub struct Tick {
     delta_time: f32,
 }
 
-pub fn update(tick: &mut Tick) {
+pub(crate) fn update(tick: &mut Tick) {
     let time = SystemTime::now();
 
     tick.delta_time = match time.duration_since(tick.previous_time) {
@@ -20,7 +18,7 @@ pub fn update(tick: &mut Tick) {
 }
 
 impl Tick {
-    pub fn new() -> Tick {
+    pub(crate) fn new() -> Tick {
         Tick {
             time_until_start: SystemTime::now(),
             previous_time: SystemTime::now(),
@@ -38,11 +36,5 @@ impl Tick {
             Ok(time) => time.as_secs() as f32,
             Err(_) => 0.0,
         }
-    }
-}
-
-impl Default for Tick {
-    fn default() -> Self {
-        Self::new()
     }
 }

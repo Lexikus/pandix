@@ -17,16 +17,18 @@ use legion::world::Universe;
 
 use context::canvas::Canvas;
 use context::input;
+use context::input::Input;
 use context::keyboard::Action;
 use context::keyboard::Button;
 use context::keyboard::Key;
 use context::keyboard::Modifier;
 use context::Event;
 
-use crate::resource;
 use crate::scene::Scene;
+use crate::scene_management::SceneManagement;
 use crate::system;
 use crate::tick;
+use crate::tick::Tick;
 
 pub struct Engine {
     universe: Universe,
@@ -39,9 +41,9 @@ pub struct Engine {
 impl Engine {
     pub fn new() -> Self {
         let mut resources = Resources::default();
-        resources.insert(resource::SceneManagement::new());
-        resources.insert(resource::Input::new());
-        resources.insert(resource::Tick::new());
+        resources.insert(SceneManagement::new());
+        resources.insert(Input::new());
+        resources.insert(Tick::new());
 
         Engine {
             universe: Universe::new(),
@@ -58,11 +60,9 @@ impl Engine {
 
         self.scenes.insert(key as i16, scene);
 
-        if let Some(ref mut scene_management) =
-            self.resources.get_mut::<resource::SceneManagement>()
-        {
-            if scene_management.current_scene == -1 {
-                scene_management.current_scene = 0;
+        if let Some(ref mut scene_management) = self.resources.get_mut::<SceneManagement>() {
+            if scene_management.current() == -1 {
+                scene_management.change(0);
             }
         }
     }
@@ -113,7 +113,7 @@ impl Engine {
                         repeat,
                         ..
                     } => {
-                        if let Some(ref mut input) = resources.get_mut::<resource::Input>() {
+                        if let Some(ref mut input) = resources.get_mut::<Input>() {
                             let key: Key = if keycode.is_some() {
                                 keycode.unwrap().into()
                             } else {
@@ -133,7 +133,7 @@ impl Engine {
                     context::Event::KeyUp {
                         keycode, keymod, ..
                     } => {
-                        if let Some(ref mut input) = resources.get_mut::<resource::Input>() {
+                        if let Some(ref mut input) = resources.get_mut::<Input>() {
                             let key: Key = if keycode.is_some() {
                                 keycode.unwrap().into()
                             } else {
@@ -150,16 +150,13 @@ impl Engine {
                 }
             }
 
-            if let Some(tick) = &mut resources.get_mut::<resource::Tick>() {
+            if let Some(tick) = &mut resources.get_mut::<Tick>() {
                 tick::update(tick);
             }
 
             graphic::api::clear_color(0.0, 0.0, 1.0, 1.0);
 
-            let current_scene = resources
-                .get::<resource::SceneManagement>()
-                .unwrap()
-                .current_scene;
+            let current_scene = resources.get::<SceneManagement>().unwrap().current();
             // TODO: remove unwrap
             let scene = self.scenes.get_mut(&current_scene).unwrap();
 
@@ -174,7 +171,7 @@ impl Engine {
             // execute engine render system
             self.render_system.execute(scene.world_mut(), resources);
 
-            let mut input = resources.get_mut::<resource::Input>().unwrap();
+            let mut input = resources.get_mut::<Input>().unwrap();
 
             input::clean_up(&mut input);
         });
